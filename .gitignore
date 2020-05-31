@@ -1,3 +1,4 @@
 *.mat
 *.slxc
-/slprj/
+*.slx.autosave
+slprj/
