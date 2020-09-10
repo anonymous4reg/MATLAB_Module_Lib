@@ -1,11 +1,11 @@
 clear;clc
 % User input zone: 10% 要写成 0.1
-RatedCapacity = 4.6e6; % VA
+RatedCapacity = 3e6; % VA
 RatedVoltage = 37e3; % Volt
 ShortCircuitImpedancePer = 0.07; % 短路阻抗百分比
-FullLoadLoss = 48.3e3; % 负载损耗 Watte
-NoLoadCurrentPer = 0.008; % 空载电流百分比
-NoLoadLoss = 5.06e3; % 空载损耗 Watte
+FullLoadLoss = 32.5e3; % 负载损耗 Watte
+NoLoadCurrentPer = 0.003; % 空载电流百分比
+NoLoadLoss = 3.15e3; % 空载损耗 Watte
 Freq = 50;
 Omega = 2*pi*Freq;
 
@@ -29,4 +29,5 @@ Rm_pu = RatedCapacity / ( NoLoadLoss)
 Xm_pu = 1/NoLoadCurrentPer
 
 % Lm_pu = Xm_pu / Omega
+
 
