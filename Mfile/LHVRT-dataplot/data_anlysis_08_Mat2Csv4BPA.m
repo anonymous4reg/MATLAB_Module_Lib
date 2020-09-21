@@ -15,7 +15,7 @@ PostfixCell = {'p4.2', 'p0.84'};
 SubFolderCell = FolderSeqGen(PrefixCell, PhaseCell, DipCell, PostfixCell, '_');
 CsvTableColumnName = {'t(s)'; 'U1';  'Q';  'Iq'};
 % CsvTableColumnName = {'t(s)'; 'U1'; 'P'; 'Q'; 'Ip'; 'Iq'};
-MatFileVariableName = "t, V35, Q35, Iq35";
+MatFileVariableName = {'t', 'V35', 'Q35', 'Iq35'};
 ResampleTs = 5e-3;
 
 
