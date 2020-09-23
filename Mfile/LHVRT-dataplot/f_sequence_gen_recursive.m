@@ -1,7 +1,10 @@
 function output_cell = f_sequence_gen_recursive(input_cell, deliminator)
-%UNTITLED Summary of this function goes here
-%   Detailed explanation goes here
-
+% Generate delminator seperated sequence recursively, 
+% without using input_cell length limit
+%   __input_cell__ must be a cell of cell, 
+%  eg: {{'VRT'},{'3ph', '2ph'}, {'u20', 'u35', 'u50'}, {'p2.0', 'p0.4'}},
+%  two-pair of '{}' is a must.
+% 
 
 [row_sub_cell, col_sub_cell] = size(input_cell);
 if col_sub_cell == 2
@@ -10,15 +13,15 @@ if col_sub_cell == 2
 	cell_j = input_cell{2};
 	for idx_i = 1:length(cell_i)
 		for idx_j = 1:length(cell_j)
-			tmp_cell = strcat(cell_i(idx_i), deliminator, cell_j(idx_j));
+			tmp_cell = [tmp_cell strcat(cell_i(idx_i), deliminator, cell_j(idx_j))];
 		end
 	end
-	output_cell = tmp_cell;
+	output_cell = {tmp_cell};
 else
-	pop_out_cell = input_cell(1:2);
-	leave_out_cell = input_cell(3:end);
+	pop_out_cell = input_cell(end);
+	leave_out_cell = input_cell(1:end-1);
 	recursive_cell = f_sequence_gen_recursive(leave_out_cell, deliminator);
-	output_cell = [recursive_cell, pop_out_cell];
+	output_cell = f_sequence_gen_recursive({recursive_cell{1}, pop_out_cell{1}}, deliminator);
 end
 
 

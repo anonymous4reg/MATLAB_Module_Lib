@@ -7,12 +7,12 @@ DipCell = {'u20', 'u35', 'u50', 'u75', 'u90', 'u120', 'u125', 'u130'};
 % DipCell = {'u120', 'u125'};
 % DipCell = {'u20', 'u35', 'u50', 'u75', 'u90'};
 % PostfixCell = {'Idle'};  
-PostfixCell = {'p4.2', 'p0.84'};
+PostfixCell = {'p3.0', 'p0.6'};
 SubFolderCell = FolderSeqGen(PrefixCell, PhaseCell, DipCell, PostfixCell, '_');
 
-HIL_Dir = 'D:\GoldWind\02-MatFile-HIL\GW4.2\';
-DL_Dir = 'D:\GoldWind\03-MatFile-DL\GW4.2MW\';
-Out_Dir = 'D:\GoldWind\04-DL-HIL-ComparePlot\GW4.2MW\';
+HIL_Dir = 'D:\GoldWind\02-MatFile-HIL\GW3_0MW_PSC05_B2Bx4\';
+DL_Dir = 'D:\GoldWind\03-MatFile-DL\GW3.0MW-PCS05\';
+Out_Dir = 'D:\GoldWind\04-DL-HIL-ComparePlot\GW3.0MW-PCS05\';
 PlotVisibleOrNot = 'off';  % 'on' or 'off'
 
 tic
