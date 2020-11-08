@@ -1,5 +1,5 @@
 function output_cell = f_sequence_gen_recursive(input_cell, deliminator)
-% Generate delminator seperated sequence recursively, 
+% Generate delminator seperated sequence recursively, ver 1.0, by Yamin
 % without using input_cell length limit
 %   __input_cell__ must be a cell of cell, 
 %  eg: {{'VRT'},{'3ph', '2ph'}, {'u20', 'u35', 'u50'}, {'p2.0', 'p0.4'}},

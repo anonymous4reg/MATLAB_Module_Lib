@@ -3,25 +3,26 @@
 % __MatFilePrefix__ and __VarNamePrefix__, these two var act as
 % regular expression
 clear;clc
-RootDir = "D:\RTLAB_File\TaiKai_SVG\03-mat_file\06-bai_miao_tan\";
+RootDir = "E:\HaiDe_DFIG_2MW_matfile\02-mat_file\";
 
 % Mat file name prefix, program will search related files in each folder
-MatFilePrefix = "file";
+MatFilePrefix = "myfile";
 % Variable name prefix, after loading a .mat file, program will search related variable name
-VarNamePrefix = "data";
+VarNamePrefix = "opvar";
 
 % Idle case processing
 PrefixCell = {'VRT'};
-PhaseCell = {'3ph'};
-DipCell = {'u20u130', 'u20u130x2'};
+% PhaseCell = {'3ph'};
+% DipCell = {'u20u130', 'u20u130x2'};
 % PostfixCell = {'q69', 'q-69', 'q13.8', 'q-13.8'};
 % PostfixCell = {'q29', 'q-29', 'q5.8', 'q-5.8'};
 % PostfixCell = {'idle'};
 % PostfixCell = {'q28', 'q-28', 'q5.6', 'q-5.6'};
-PostfixCell = {'q25', 'q-25', 'q5.0', 'q-5.0'};
+% PostfixCell = {'idle'};
+PostfixCell = {'p2.0', 'p0.4'};
 % PostfixCell = {'q38.5', 'q-38.5', 'q7.7', 'q-7.7'};
 % PostfixCell = {'q22', 'q-22', 'q4.4', 'q-4.4'};
-SubFolderCell1 = FolderSeqGen(PrefixCell, PhaseCell, DipCell, PostfixCell, '_');
+% SubFolderCell1 = f_sequence_gen_recursive({PrefixCell, PhaseCell, DipCell, PostfixCell}, '_');
 
 % DipCell = {'u20u130x2'};
 % DipCell = {'u20', 'u50', 'u90'};
@@ -30,12 +31,16 @@ SubFolderCell1 = FolderSeqGen(PrefixCell, PhaseCell, DipCell, PostfixCell, '_');
 
 PrefixCell = {'VRT'};
 PhaseCell = {'3ph', '2ph'};
-DipCell = {'u20', 'u50', 'u90', 'u120', 'u125', 'u130'};
+% DipCell = {'u20', 'u35', 'u50', 'u75', 'u90', 'u120', 'u125', 'u130'};
+DipCell = {'u75'};
+PostfixCell = {'p2.0', 'p0.4'};
 % PostfixCell = {'q69', 'q-69', 'q13.8', 'q-13.8'};
 
-SubFolderCell2 = FolderSeqGen(PrefixCell, PhaseCell, DipCell, PostfixCell, '_');
+SubFolderCell2 = f_sequence_gen_recursive({PrefixCell, PhaseCell, DipCell, PostfixCell}, '_');
 
-SubFolderCell = [SubFolderCell1, SubFolderCell2];
+% SubFolderCell = [SubFolderCell1{1}, SubFolderCell2{1}];
+SubFolderCell = SubFolderCell2{1};
+
 
 t_range = 15;
 
@@ -64,107 +69,107 @@ for each_folder=1:length(SubFolderCell)
         
 			
 			%%% User code start
-			Ts=5e-5;
+			Ts=2e-5;
             t=data_1(1,:);
             t=t-t(1);
             t=t';
-            va220=data_1(2,:);
-            vb220=data_1(3,:);
-            vc220=data_1(4,:);
-            Ia220=data_1(5,:);
-            Ib220=data_1(6,:);
-            Ic220=data_1(7,:);
-            va35=data_1(8,:);
-            vb35=data_1(9,:);
-            vc35=data_1(10,:);
-            Ia35=data_1(11,:);
-            Ib35=data_1(12,:);
-            Ic35=data_1(13,:);
+            Vabc_35kV = data_1(2:4,:)';
+            Iabc_35kV = data_1(5:7,:)';
+            Vabc_690V = data_1(8:10,:)';
+            Iabc_690V = data_1(11:13,:)';
+            V_pu_35kV = data_1(14,:)';
+            P_pu_35kV = data_1(15,:)';
+            Q_pu_35kV = data_1(16,:)';
+            Ip_pu_35kV = data_1(17,:)';
+            Iq_pu_35kV = data_1(18,:)';
+            V_pu_690V = data_1(19,:)';
+            P_pu_690V = data_1(20,:)';
+            Q_pu_690V = data_1(21,:)';
+            Ip_pu_690V = data_1(22,:)';
+            Iq_pu_690V = data_1(23,:)';
+            V_dc = data_1(24,:)';
 
-            vcapa=data_1(14,:);
-            vcapb=data_1(15,:);
-            vcapc=data_1(16,:);
-            V35=data_1(17,:);
-            Q35=data_1(18,:);
-            Iq35=data_1(19,:);
-
-
-            va220=va220';
-            vb220=vb220';
-            vc220=vc220';
-            Ia220=Ia220';
-            Ib220=Ib220';
-            Ic220=Ic220';
-            va35=va35';
-            vb35=vb35';
-            vc35=vc35';
-            Ia35=Ia35';
-            Ib35=Ib35';
-            Ic35=Ic35';
-            vcapa=vcapa';
-            vcapb=vcapb';
-            vcapc=vcapc';
-            V35=V35';
-            Q35=Q35';
-            Iq35=Iq35';
+            figure
+            plot(t, Iq_pu_690V,'r','LineWidth',3)
+            grid on;
+            legend('Iq+');
+            set(gca,'FontSize',18,'FontWeight','bold');
+            xlabel('t/s','fontsize',20);
+            ylabel('Iq/In','fontsize',20);
+            axis_backup_1=axis;
+            axis([0 t_range axis_backup_1(3:4)]);
+            saveas( gca, strcat(sub_folder_dir, '\', 'Iq+.fig') )
+            saveas( gca, strcat(sub_folder_dir, '\', 'Iq+.emf') )
+            saveas( gca, strcat(sub_folder_dir, '\', 'Iq+.png') )
 
 
             figure
-            plot(t,V35,'r','LineWidth',3)
+            plot(t, Q_pu_690V,'r','LineWidth',3)
             grid on;
-            legend('U1+');
+            legend('Q+');
             set(gca,'FontSize',18,'FontWeight','bold');
             xlabel('t/s','fontsize',20);
-            ylabel('U/Un','fontsize',20);
+            ylabel('Q/Pn','fontsize',20);
             axis_backup_1=axis;
-            if strcmp(PostfixCell{1}, 'idle') == true
-                axis([0 t_range 0 1.35]);
-            else
-                axis([0 t_range axis_backup_1(3:4)]);
-            end
-            saveas( gca, strcat(sub_folder_dir, '\', 'U1+.fig') )
-            saveas( gca, strcat(sub_folder_dir, '\', 'U1+.emf') )
-            saveas( gca, strcat(sub_folder_dir, '\', 'U1+.png') )
-
-            figure
-            plot(t, Q35,'r','LineWidth',3)
-            grid on;
-            legend('Q1+');
-            set(gca,'FontSize',18,'FontWeight','bold');
-            xlabel('t/s','fontsize',20);
-            ylabel('Q/Qn','fontsize',20);
-            axis_backup_1=axis;
-            if strcmp(PostfixCell{1}, 'idle') == true
-                axis([0 t_range 0 1.35]);
-            else
-                axis([0 t_range axis_backup_1(3:4)]);
-            end
+            axis([0 t_range axis_backup_1(3:4)]);
             saveas( gca, strcat(sub_folder_dir, '\', 'Q+.fig') )
             saveas( gca, strcat(sub_folder_dir, '\', 'Q+.emf') )
             saveas( gca, strcat(sub_folder_dir, '\', 'Q+.png') )
 
             figure
-            plot(t, Iq35,'r','LineWidth',3)
+            plot(t, Ip_pu_690V,'r','LineWidth',3)
             grid on;
-            legend('Iq1+');
+            legend('Ip+');
             set(gca,'FontSize',18,'FontWeight','bold');
             xlabel('t/s','fontsize',20);
-            ylabel('I/In','fontsize',20);
+            ylabel('Ip/In','fontsize',20);
             axis_backup_1=axis;
-            if strcmp(PostfixCell{1}, 'idle') == true
-                axis([0 t_range 0 1.35]);
-            else
-                axis([0 t_range axis_backup_1(3:4)]);
-            end
-            saveas( gca, strcat(sub_folder_dir, '\', 'Iq+.fig') )
-            saveas( gca, strcat(sub_folder_dir, '\', 'Iq+.emf') )
-            saveas( gca, strcat(sub_folder_dir, '\', 'Iq+.png') )
+            axis([0 t_range axis_backup_1(3:4)]);
+            saveas( gca, strcat(sub_folder_dir, '\', 'Ip+.fig') )
+            saveas( gca, strcat(sub_folder_dir, '\', 'Ip+.emf') )
+            saveas( gca, strcat(sub_folder_dir, '\', 'Ip+.png') )
 
+
+
+            figure
+            plot(t, P_pu_690V,'r','LineWidth',3)
+            grid on;
+            legend('P+');
+            set(gca,'FontSize',18,'FontWeight','bold');
+            xlabel('t/s','fontsize',20);
+            ylabel('P/Qn','fontsize',20);
+            axis_backup_1=axis;
+            axis([0 t_range axis_backup_1(3:4)]);
+            saveas( gca, strcat(sub_folder_dir, '\', 'P+.fig') )
+            saveas( gca, strcat(sub_folder_dir, '\', 'P+.emf') )
+            saveas( gca, strcat(sub_folder_dir, '\', 'P+.png') )
+
+
+            figure
+            plot(t,V_pu_690V,'r','LineWidth',3)
+            grid on;
+            legend('U+');
+            set(gca,'FontSize',18,'FontWeight','bold');
+            xlabel('t/s','fontsize',20);
+            ylabel('U/Un','fontsize',20);
+            axis_backup_1=axis;
+            axis([0 t_range axis_backup_1(3:4)]);
+            saveas( gca, strcat(sub_folder_dir, '\', 'U+.fig') )
+            saveas( gca, strcat(sub_folder_dir, '\', 'U+.emf') )
+            saveas( gca, strcat(sub_folder_dir, '\', 'U+.png') )
+
+            u1 = V_pu_690V;
+            p1 = P_pu_690V;
+            q1 = Q_pu_690V;
+            ip1 = Ip_pu_690V;
+            iq1 = Iq_pu_690V;
             save(strcat(sub_folder_dir, '\', 'data_t'), 't');
-            save(strcat(sub_folder_dir, '\', 'data_u'), 'V35');
-            save(strcat(sub_folder_dir, '\', 'data_Q'), 'Q35');
-            save(strcat(sub_folder_dir, '\', 'data_Iq'), 'Iq35');
-
+            save(strcat(sub_folder_dir, '\', 'data_u'), 'u1');
+            save(strcat(sub_folder_dir, '\', 'data_P'), 'p1');
+            save(strcat(sub_folder_dir, '\', 'data_Q'), 'q1');
+            save(strcat(sub_folder_dir, '\', 'data_Ip'), 'ip1');
+            save(strcat(sub_folder_dir, '\', 'data_Iq'), 'iq1');
+            
             close all
 
             %%% User code end
