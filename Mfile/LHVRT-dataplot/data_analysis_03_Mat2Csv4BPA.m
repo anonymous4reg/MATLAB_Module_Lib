@@ -6,18 +6,19 @@ clear;clc
 % 更改ResampleTs，从而得到不同采样率的CSV
 ResampleTs = 10e-3;
 % ResampleTs = 100e-6;
-RootDir = "H:\Data\20200519_金风GW\04-RTLAB_Data_MatFile\GW4.2\";
+RootDir = "E:\RTLAB_Data_HeWang\ChaoYangWan_DW3000_HW\LVRT\";
 
 
 % 
 
 % Please change here as you wish
 PrefixCell = {'VRT'};
-PhaseCell = {'3ph', '2ph'};
-DipCell = {'u20', 'u35', 'u50', 'u75', 'u90', 'u120', 'u125', 'u130'};
-PostfixCell = {'p4.2', 'p0.84'};
+PhaseCell = {'3PH', '2PH'};
+DipCell = {'20', '35', '50', '75', '120', '125', '130'};
+% DipCell = {'u20', 'u35', 'u50', 'u75', 'u90', 'u120', 'u125', 'u130'};
+PostfixCell = {'DF', 'XF'};
 
-SubFolderCell = f_sequence_gen_recursive({PrefixCell, PhaseCell, DipCell, PostfixCell}, '_');
+SubFolderCell = f_sequence_gen_recursive({PrefixCell, DipCell, PostfixCell, PhaseCell}, '-');
 SubFolderCell = SubFolderCell{1};
 
 
