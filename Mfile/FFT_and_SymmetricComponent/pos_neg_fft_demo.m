@@ -22,5 +22,6 @@ SigPN0 = SigPN0';
 
 
 [fx, mx, ax] = fft_simple(Pos50Hz(:, 1) + Neg58Hz(:, 1), Fs, Tspan);
-plot(fx, mx)
-% axis([0, 100, -0.1, 1.2])
+plot(fx, mx, 'linewidth', 1.8)
+grid on
+axis([0, 100, -0.1, 1.2])
