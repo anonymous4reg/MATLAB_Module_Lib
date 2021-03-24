@@ -1,8 +1,8 @@
 % clear;clc
-PosThreePhaseGen = @(amp, freq, t) amp .* [cos(2*pi*freq.*t);  cos(2*pi*freq.*t - 2*pi/3); cos(2*pi*freq.*t + 2*pi/3)]';
-NegThreePhaseGen = @(amp, freq, t) amp .* [cos(2*pi*freq.*t);  cos(2*pi*freq.*t + 2*pi/3); cos(2*pi*freq.*t - 2*pi/3)]';
+PosThreePhaseGen = @(amp, freq, t) amp .* [sin(2*pi*freq.*t);  sin(2*pi*freq.*t - 2*pi/3); sin(2*pi*freq.*t + 2*pi/3)]';
+NegThreePhaseGen = @(amp, freq, t) amp .* [sin(2*pi*freq.*t);  sin(2*pi*freq.*t + 2*pi/3); sin(2*pi*freq.*t - 2*pi/3)]';
 ZeroThreePhaseGen = @(amp, freq, t, phase) amp .* ...
-    [cos(2*pi*freq.*t - phase); cos(2*pi*freq.*t - phase); cos(2*pi*freq.*t - phase)]';
+    [sin(2*pi*freq.*t - phase); sin(2*pi*freq.*t - phase); sin(2*pi*freq.*t - phase)]';
 a = exp(1j * 2 * pi / 3);
 Abc2Pn0Mat = (1/3) .* [1  a  a^2; 1  a^2  a; 1  1  1];
 
@@ -24,12 +24,11 @@ SigSum = Pos50Hz + Neg58Hz + Zero70Hz;
 % [fx, mx, ax] = fft_simple(SigSum, Fs, L);
 
 subplot(2, 1, 1)
-stem(fx, mx, 'linewidth', 1.8)
-axis([0, 100, -0.1, 1.2])
+plot(fx, mx, 'linewidth', 1.8)
+axisbk = axis;
+axis([0, 100, axisbk(3:4)])
 subplot(2, 1, 2)
 plot(fx, ax * 180 / pi, 'linewidth', 1.8)
-axis([0, 100, -190, 190])
+axisbk = axis;
+axis([0, 100, axisbk(3:4)])
 
-% plot(fx, mx(:, 1), 'linewidth', 1.8)
-% grid on
-% axis([0, 100, -0.1, 1.2])
