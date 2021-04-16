@@ -1,6 +1,6 @@
 clear;clc
 
-RootDir = "D:\RTLAB_File\TaiKai_SVG\03-mat_file\02-man_run_er\third_test\";
+RootDir = ''D:\RTLAB_File\TaiKai_SVG\03-mat_file\02-man_run_er\third_test;
 OutDir = RootDir;
 
 PrefixCell = {'VRT'};

@@ -1,8 +1,12 @@
-function fun_word_figure(figureroute, name, file_name)
-%利用MATLAB生成Word文档
-%	原摘自xiezhh，根据论坛上的相关建议，做了稍微的改动和完善
+function fun_word_title(name, font_size, word_file_url)
+% Generate a title in Word
+%   Detailed explanation goes here
 
-filespec_user = file_name;
+if nargin == 2
+    filespec_user = [pwd, '\', 'rpt_autogen.doc'];
+elseif nargin == 3
+    filespec_user = word_file_url;
+end
 
 %===启用word调用功能========================================================
 try    
@@ -12,7 +16,7 @@ catch
 end
 Word.Visible = 1; % 使word为可见；或set(Word, 'Visible', 1); 
 %===打开word文件，如果路径下没有则创建一个空白文档打开========================
-if exist(filespec_user,'file') 
+if exist(filespec_user,'file')
     document = Word.Documents.Open(filespec_user);    
 else
     document = Word.Documents.Add;     
@@ -42,27 +46,25 @@ paragraphformat = selection.ParagraphFormat;
 %设定下面内容的起始位置（将光标放在最后边） 
 end_of_doc = get(content,'end'); 
 set(selection,'Start',end_of_doc);
-% hgexport(fg, '-clipboard');  
-% selection.Range.Paste; 
-figurehandle = selection.InlineShapes.AddPicture(figureroute);
-paragraphformat.Alignment = 'wdAlignParagraphCenter';
-%删除图形句柄 
-% delete(figurehandle); 
-% selection.MoveDown;
 %另起一段  
-% selection.TypeParagraph;
-% selection.TypeParagraph; 
+selection.TypeParagraph;  
 % 表格之后的段落
 selection.Start = content.end;
-selection.TypeParagraph;
+% selection.TypeParagraph;
+% paragraphformat.Alignment = 'wdAlignParagraphLeft';
+% set(paragraphformat, 'Alignment','wdAlignParagraphLeft'); 
 selection.Text = name;
-selection.Font.Size = 10.5;
+selection.Font.Size = font_size;
 selection.Font.Bold = 1;
 selection.Font.name = '宋体';
 selection.Font.name = 'Times New Roman';
-paragraphformat.Alignment = 'wdAlignParagraphCenter';
-% set(paragraphformat, 'Alignment','wdAlignParagraphCenter'); 
-selection.MoveDown;
-%另起一段  
-selection.TypeParagraph;
+set(paragraphformat,'outlineLevel', 3);
+set(paragraphformat,'spaceBefore', 6);
+set(paragraphformat,'leftIndent', 0);
+paragraphformat.Alignment = 'wdAlignParagraphLeft';
+% set(paragraphformat, 'Alignment','wdAlignParagraphJustify');
+selection.MoveDown; 
+selection.TypeParagraph; 
+set(paragraphformat,'outlineLevel', 10);
+set(paragraphformat,'spaceBefore', 0);
 document.Save;  % 保存文档

@@ -1,9 +1,8 @@
-function fun_word_title(name)
-%利用MATLAB生成Word文档
-%	原摘自xiezhh，根据论坛上的相关建议，做了稍微的改动和完善
+function fun_word_title(name, font_size, file_name)
+% Generate a title in Word
+%   Detailed explanation goes here
 
-filespec_user = [pwd '\BPA与RTLAB对比.doc'];
-
+filespec_user = file_name;
 %===启用word调用功能========================================================
 try    
     Word = actxGetRunningServer('Word.Application');
@@ -50,7 +49,7 @@ selection.Start = content.end;
 % paragraphformat.Alignment = 'wdAlignParagraphLeft';
 % set(paragraphformat, 'Alignment','wdAlignParagraphLeft'); 
 selection.Text = name;
-selection.Font.Size = 12;
+selection.Font.Size = font_size;
 selection.Font.Bold = 1;
 selection.Font.name = '宋体';
 selection.Font.name = 'Times New Roman';

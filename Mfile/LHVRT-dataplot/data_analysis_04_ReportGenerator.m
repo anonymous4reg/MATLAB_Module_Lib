@@ -1,78 +1,40 @@
-% 2020/10/20 - version 1: Generate report automatically
-% will recognize mat-file and variable automatically according to 
-% __MatFilePrefix__ and __VarNamePrefix__, these two var act as
-% regular expression
-clear;clc
-RootDir = "D:\Work\Êñ∞ËÉΩÊ∫êÂ∑•‰Ωú\[Routine] Âª∫Ê®°\20200923_‰Ω©ÁâπDFIG2.0MW\HaiDe_DFIG_2MW_matfile\02-mat_file\";
+%% User could change here
+SrcDir = 'E:\HW_FuNing_data\';  % Your .mat file location
+DstDir = SrcDir;  % where your doc will be generated
 
-% Idle case processing
+WordFileName = 'rpt_autogen.doc';  % your doc name
+WordFileUrl = strcat(DstDir, WordFileName); 
+WordTitle = '∏ßƒ˛‘À¥Ô∫ÃÕ˚3.0MW';   % title of your report
+
 PrefixCell = {'VRT'};
-
-PostfixCell = {'p2.0', 'p0.4'};
-
 PhaseCell = {'3ph', '2ph'};
-DipCell = {'u20', 'u35', 'u50', 'u75', 'u90', 'u120', 'u125', 'u130'};
-SubFolderCell = f_sequence_gen_recursive({PrefixCell, PhaseCell, DipCell, PostfixCell}, '_');
-
+DipCell = {'u20', 'u35', 'u50', 'u75', 'u130', 'u125', 'u120'};
+PostfixCell = {'p1.0', 'p0.2'};
+SubFolderCell = f_sequence_gen_recursive({PrefixCell, PhaseCell, DipCell, PostfixCell, }, '_');
 SubFolderCell = SubFolderCell{1};
 
-FigureNameCell = {'U+', 'P+', 'Q+', 'Ip+', 'Iq+'};
-FigureType = '.emf';
-ReportTitle = 'Haide DLL test';
 
+%% Main program here
 tic
-
-% Import report API classes (optional)
-import mlreportgen.report.*
-import mlreportgen.dom.*
-
-% Add report container (required)
-rpt = Report(ReportTitle,'docx');
-
-% Add content to container (required)
-% Types of content added here: title 
-% page and table of contents reporters
-titlepg = TitlePage;
-titlepg.Title = ReportTitle;
-titlepg.Author = 'NCEPRI';
-add(rpt,titlepg);
-add(rpt,TableOfContents);
-
-for each_folder=1:length(SubFolderCell)
-	disp(strcat('[', num2str(each_folder), '/', num2str(length(SubFolderCell)) , ']-', ...
-		'Working on :', SubFolderCell{each_folder}))
-	sub_folder_dir = strcat(RootDir, SubFolderCell{each_folder}, "\");
-    disp(sub_folder_dir);
+fun_word_title(WordTitle, 32, WordFileUrl)
+for file_idx=1:length(SubFolderCell)
+	sub_folder_name = SubFolderCell{file_idx};
+    sub_folder_dir = [SrcDir, '\', sub_folder_name];
+    fun_word_title(sub_folder_name, 15, WordFileUrl)
     
-    % Add content to report sections (optional)
-    % Text and formal image added to chapter
-    chap = Chapter(SubFolderCell{each_folder});
-    add(chap, SubFolderCell{each_folder});
+	disp(strcat('[', num2str(file_idx), '/', num2str(length(SubFolderCell)) , '] - ', ...
+        'Working on: ', SubFolderCell{file_idx}))
     
-    for each_fig = 1:length(FigureNameCell)
-%         p = Paragraph(chap,FormalImage('Image',...
-%             strcat(sub_folder_dir, strcat(FigureNameCell{each_fig}, FigureType)),'Height','3in',...
-%             'Width','4in','Caption', FigureNameCell{each_fig}));
-%         add(chap,FormalImage('Image',...
-%             strcat(sub_folder_dir, strcat(FigureNameCell{each_fig}, FigureType)),'Height','3in',...
-%             'Width','4in','Caption', FigureNameCell{each_fig}));
-%         add(rpt,chap);
-        image = FormalImage('Image',...
-            strcat(sub_folder_dir, strcat(FigureNameCell{each_fig}, FigureType)),'Height','4.5in',...
-            'Width','6.5in','Caption', FigureNameCell{each_fig});
-        append(chap, Section('Title', ...
-            FigureNameCell{each_fig}, ...
-            'Content', ...
-            image));
-    end
-    add(rpt,chap);
+    fig_url = strcat(sub_folder_dir, '\', 'U+.emf');
+    fun_word_figure(fig_url, 'U+', WordFileUrl)
     
-	break  % debug only
-	
+    fig_url = strcat(sub_folder_dir, '\', 'PQ+.emf');
+    fun_word_figure(fig_url, 'PQ+', WordFileUrl)
+    
+    fig_url = strcat(sub_folder_dir, '\', 'IpIq+.emf');
+    fun_word_figure(fig_url, 'IpIq+', WordFileUrl)
+    
+%     break
+
 end
-% Close the report (required)
-close(rpt);
-% Display the report (optional)
-rptview(rpt);
-disp('Compl√©ter.')
 toc

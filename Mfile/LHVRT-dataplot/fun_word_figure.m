@@ -1,8 +1,11 @@
-function fun_word_figure(figureroute, name, file_name)
+function fun_word_figure(fig_url, fig_name, word_file_url)
 %利用MATLAB生成Word文档
 %	原摘自xiezhh，根据论坛上的相关建议，做了稍微的改动和完善
-
-filespec_user = file_name;
+if nargin == 2
+    filespec_user = [pwd, '\', 'rpt_autogen.doc'];
+elseif nargin == 3
+    filespec_user = word_file_url;
+end
 
 %===启用word调用功能========================================================
 try    
@@ -44,7 +47,7 @@ end_of_doc = get(content,'end');
 set(selection,'Start',end_of_doc);
 % hgexport(fg, '-clipboard');  
 % selection.Range.Paste; 
-figurehandle = selection.InlineShapes.AddPicture(figureroute);
+figurehandle = selection.InlineShapes.AddPicture(fig_url);
 paragraphformat.Alignment = 'wdAlignParagraphCenter';
 %删除图形句柄 
 % delete(figurehandle); 
@@ -55,7 +58,7 @@ paragraphformat.Alignment = 'wdAlignParagraphCenter';
 % 表格之后的段落
 selection.Start = content.end;
 selection.TypeParagraph;
-selection.Text = name;
+selection.Text = fig_name;
 selection.Font.Size = 10.5;
 selection.Font.Bold = 1;
 selection.Font.name = '宋体';
