@@ -1,0 +1,40 @@
+<!-- $Revision: 1.1 $ -->
+<html>
+<head><title>Demo Help: rtdemo1.mdl (RT-LAB Simulink model)</title></head><body>
+<p style="color:#990000; font-weight:bold; font-size:x-large">RTDemo1</p>
+
+<p>The rtdemo1 model demonstrates ...</p>
+
+<h3>What is a PID controller?</h3>
+<p>PID stands for Proportional-Integral-Derivative. This is a type of feedback controller whose output,
+a control variable (CV), is generally based on the error between some user-defined set point
+(SP) and some measured process variable (PV). Each element of the PID controller refers to a
+particular action taken on the error:<br>
+<br>
+Proportional:
+Error multiplied by a gain, Kp. This is an adjustable amplifier. In many systems Kp is
+responsible for process stability: too low and the PV can drift away; too high and the
+PV can oscillate.<br>
+<br>
+Integral:
+The integral of error multiplied by a gain, Ki. In many systems Ki is responsible for
+driving error to zero, but to set Ki too high is to invite oscillation or instability or
+integrator windup or actuator saturation.<br>
+<br>
+Derivative:
+The rate of change of error multiplied by a gain, Kd. In many systems Kd is responsible
+for system response: too low and the PV will oscillate; too high and the PV will respond
+sluggishly. The designer should also note that derivative action amplifies any noise in
+the error signal.<br>
+<br>
+Tuning of a PID involves the adjustment of Kp, Ki, and Kd to achieve some user-defined
+"optimal" character of system response. <br>
+<br>
+Although many architectures exist for control systems, the PID controller is mature and
+well-understood by practitioners. For these reasons, it is often the first choice for new
+controller design. It satisfies Occam's Razor in being the simplest solution for most cases.<br>
+<br>
+from: http://www.tcnj.edu/~rgraham/PID-tuning.html
+</p>
+</body>
+</html>
