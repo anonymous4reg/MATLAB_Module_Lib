@@ -1,0 +1,1 @@
+第一次运行make命令报错是因为原ma文件夹中缺少sfcn_bridge.h文件，sfcn_bridge.h可以在matlab软件位置处搜索后找到，然后复制到ma文件夹后在运行命令就会成功。

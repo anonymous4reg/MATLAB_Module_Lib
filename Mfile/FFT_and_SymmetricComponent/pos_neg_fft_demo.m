@@ -23,12 +23,44 @@ SigSum = Pos50Hz + Neg58Hz + Zero70Hz;
 [fx, mx, ax] = fft_symmetric_component(SigSum, Fs, L);
 % [fx, mx, ax] = fft_simple(SigSum, Fs, L);
 
+figure
 subplot(2, 1, 1)
+set(gcf,'unit','centimeters','position',[10,5,18,8+3])
 plot(fx, mx, 'linewidth', 1.8)
+xlabel('Frequency (Hz)');
+ylabel('Amplitude (\Omega)');
 axisbk = axis;
 axis([0, 100, axisbk(3:4)])
+grid on
+set(gca, 'fontname', 'Times new roman')
+set(gca, 'ylim', [0, 1.2])
+
+
 subplot(2, 1, 2)
 plot(fx, ax * 180 / pi, 'linewidth', 1.8)
+xlabel('Frequency (Hz)');
+ylabel('Phase (Deg)');
 axisbk = axis;
 axis([0, 100, axisbk(3:4)])
+grid on
+set(gca, 'fontname', 'Times new roman')
 
+% figure
+% set(gcf,'unit','centimeters','position',[10,5,18,8+3])
+% subplot(2,1,1);
+% plot(ZA(:,1), ZA(:,2), '.-', 'MarkerIndices', 1:2:length(ZA), 'color', 'k', ...
+% 	'linewidth', 1.0, 'color', [1, 1, 1]/255);
+% xlabel('Frequency (Hz)');
+% ylabel('Amplitude (\Omega)');
+% grid on
+% set(gca, 'fontname', 'Times new roman')
+% subplot(2,1,2);
+% plot(ZA(:,1),ZA(:,3), '.-', 'MarkerIndices', 1:2:length(ZA), 'color', 'k', ...
+% 	'linewidth', 1.0, 'color', [1, 1, 1]/255);
+% xlabel('Frequency (Hz)');
+% ylabel('Phase (Deg)');
+% grid on
+% set(gca, 'fontname', 'Times new roman')
+% saveas(gcf, append(this_file_path, '.fig'))
+% saveas(gcf, append(this_file_path, '.emf'))
+% print(this_file_path, '-dtiff', '-r600')
