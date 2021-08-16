@@ -1,6 +1,6 @@
 clear;clc
 %% User could change here
-RootDir = 'C:\Users\anony\Desktop\Csv4Bpa_HUAWEI_70KTL\';
+RootDir = 'C:\Users\anony\Desktop\Csv4Bpa0.01\';
 OutDir = RootDir;
 OutFileName = 'KeyValue4Bpa';  % Output file name 输出文件名
 % Generating file names. 
@@ -10,14 +10,14 @@ OutFileName = 'KeyValue4Bpa';  % Output file name 输出文件名
 % the program will enumerate them recursively.
 % f_sequence_gen_recursive({cell1, cell2,...}, '分隔符')用于生成全部文件名序列，
 % 只要保证cell1、cell2...为元胞即可，字段数量没有限制，程序为递归调用。
-% field1 = {'VRT'};
-% field2 = {'3ph', '2ph'};
-% field3 = {'u20', 'u50', 'u90', 'u120', 'u125', 'u130'};
-% field4 = {'p1.0', 'p0.6', 'p0.2'};
 field1 = {'VRT'};
 field2 = {'3ph', '2ph'};
-field3 = {'u5', 'u20', 'u50', 'u80', 'u120', 'u130'};
-field4 = {'p1.0', 'p0.6', 'p0.2'};
+field3 = {'u20', 'u35', 'u50', 'u75', 'u120', 'u125', 'u130'};
+field4 = {'p1.0', 'p0.2'};
+% field1 = {'VRT'};
+% field2 = {'3ph', '2ph'};
+% field3 = {'u5', 'u20', 'u50', 'u80', 'u120', 'u130'};
+% field4 = {'p1.0', 'p0.6', 'p0.2'};
 SubFolderCell = f_sequence_gen_recursive({field1, field2, field3, field4}, '_');
 SubFolderCell = SubFolderCell{1};
 
@@ -33,10 +33,10 @@ t_after = 2.14/Ts;  % during LHVRT
 % Define each column of your CSV table, 
 % this helps the program to know what's the meaning of each column
 % TableHead = {'t', 'u', 'p', 'q', 'ip', 'iq'};
-TableHead = {'t', 'u', 'p', 'ip', 'q', 'iq'};
+TableHead = {'t', 'u', 'p', 'q', 'ip', 'iq'};
 which_col_is_u = 2;
 which_col_is_iq = 6;
-which_col_is_ip = 4;
+which_col_is_ip = 5;
 
 %% table head for key value csv table
 % 生成的关键数据表的表头，按需修改。 
