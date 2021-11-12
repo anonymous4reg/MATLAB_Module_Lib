@@ -1,6 +1,6 @@
 clear;clc
 %% User could change here
-RootDir = 'C:\Users\anony\Desktop\Csv4Bpa0.01\';
+RootDir = 'E:\20211028_华锐维帝\Veriv2p5MW_data\Csv4Bpa\';
 OutDir = RootDir;
 OutFileName = 'KeyValue4Bpa';  % Output file name 输出文件名
 % Generating file names. 
@@ -10,16 +10,13 @@ OutFileName = 'KeyValue4Bpa';  % Output file name 输出文件名
 % the program will enumerate them recursively.
 % f_sequence_gen_recursive({cell1, cell2,...}, '分隔符')用于生成全部文件名序列，
 % 只要保证cell1、cell2...为元胞即可，字段数量没有限制，程序为递归调用。
-field1 = {'VRT'};
-field2 = {'3ph', '2ph'};
-field3 = {'u20', 'u35', 'u50', 'u75', 'u120', 'u125', 'u130'};
-field4 = {'p1.0', 'p0.2'};
-% field1 = {'VRT'};
-% field2 = {'3ph', '2ph'};
-% field3 = {'u5', 'u20', 'u50', 'u80', 'u120', 'u130'};
-% field4 = {'p1.0', 'p0.6', 'p0.2'};
-SubFolderCell = f_sequence_gen_recursive({field1, field2, field3, field4}, '_');
-SubFolderCell = SubFolderCell{1};
+Field1 = {'VRT'};
+Field2 = {'3ph', '2ph'};
+Field3 = {'u20', 'u35', 'u50', 'u75', 'u120', 'u125', 'u130'};
+Field4 = {'p1.0', 'p0.2'};
+
+SubFolderCell2 = f_sequence_gen_recursive({Field1, Field2, Field3, Field4}, '_');
+SubFolderCell = SubFolderCell2{1};
 
 %% Sample time of your CSV time series data
 % !!! 必须填正确 ！！！
@@ -34,6 +31,7 @@ t_after = 2.14/Ts;  % during LHVRT
 % this helps the program to know what's the meaning of each column
 % TableHead = {'t', 'u', 'p', 'q', 'ip', 'iq'};
 TableHead = {'t', 'u', 'p', 'q', 'ip', 'iq'};
+% TableHead = {'t', 'U1', 'Q', 'Iq'};
 which_col_is_u = 2;
 which_col_is_iq = 6;
 which_col_is_ip = 5;
@@ -70,13 +68,14 @@ for each_file=1:length(SubFolderCell)
     iq_after = csv_table{t_after, TableHead{which_col_is_iq}};
     ip_after = csv_table{t_after, TableHead{which_col_is_ip}};
 
+    %% WT ou PV
     tmp_cell = {SubFolderCell{each_file}, ...
                 u_before, iq_before, ip_before ...
     			u_after, iq_after, ip_after};
-    
-%     tmp_cell = {SubFolderCell{each_file}, ...
-%                 u_before, iq_before ...
-%                 u_after, iq_after};
+    %% SVG
+    % tmp_cell = {SubFolderCell{each_file}, ...
+    %             u_before, iq_before ...
+    %             u_after, iq_after};
 
     ReturnTableHead = [ReturnTableHead; tmp_cell];
 %     break

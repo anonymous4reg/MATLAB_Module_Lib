@@ -3,30 +3,31 @@
 % files and save them in .csv format with column name. The output .csv file
 % would be used by BPA plot app.
 clear;clc
-% 更改ResampleTs，从而得到不同采样率的CSV
+% ResampleTs = 10e-3 for BPA, 100e-6 for ADPSS
 ResampleTs = 10e-3;
 % ResampleTs = 100e-6;
-RootDir = "E:\RTLAB_Data_HeWang\ChaoYangWan_DW3000_HW\LVRT\";
+RootDir = "E:\20211028_鍗庨攼缁村笣\Veriv2p5MW_data\";
 
 
 % 
 
 % Please change here as you wish
-PrefixCell = {'VRT'};
-PhaseCell = {'3PH', '2PH'};
-DipCell = {'20', '35', '50', '75', '120', '125', '130'};
-% DipCell = {'u20', 'u35', 'u50', 'u75', 'u90', 'u120', 'u125', 'u130'};
-PostfixCell = {'DF', 'XF'};
+Field1 = {'VRT'};
+Field2 = {'3ph', '2ph'};
+Field3 = {'u20', 'u35', 'u50', 'u75', 'u120', 'u125', 'u130'};
+Field4 = {'p1.0', 'p0.2'};
+% Field4 = {'idle'};  
 
-SubFolderCell = f_sequence_gen_recursive({PrefixCell, DipCell, PostfixCell, PhaseCell}, '-');
-SubFolderCell = SubFolderCell{1};
+
+SubFolderCell2 = f_sequence_gen_recursive({Field1, Field2, Field3, Field4}, '_');
+SubFolderCell = SubFolderCell2{1};
 
 
 % Please change here as you wish 
-CsvTableColumnName = {'t(s)', 'U1', 'P', 'Ip', 'Q', 'Iq'};
-MatFileName = {'data_t', 'data_u', 'data_P', 'data_Ip', 'data_Q', 'data_Iq'};
-% MatFileVariableName = {'t', 'u1', 'p1', 'ip1', 'q1', 'iq1'};
-MatFileVariableName = {'t1', 'v1', 'pe1', 'ip1', 'qe1', 'iq1'};
+CsvTableColumnName = {'t(s)', 'U', 'P', 'Q', 'Ip', 'Iq'};
+MatFileName = {'data_t', 'data_u', 'data_P', 'data_Q', 'data_Ip', 'data_Iq'};
+MatFileVariableName = {'t', 'u1', 'p1', 'q1', 'ip1', 'iq1'};
+
 
 ObjStruct = struct('CsvTableColumnName', CsvTableColumnName, ...
                    'MatFileName', MatFileName, ...
