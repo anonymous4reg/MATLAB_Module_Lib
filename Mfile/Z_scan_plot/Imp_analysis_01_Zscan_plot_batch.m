@@ -1,5 +1,8 @@
+%% version 0.3, 
+% modified by Yamin, 2021/11/12
+% description: process Low and High freq and combine them in one .m file
 clear;clc
-RootDir = "D:\PJ\Matlab\MATLAB_Module_Lib\Mfile\Zscan_data\";
+RootDir = "C:\Users\anony\Desktop\ZscanData\";
 % RootDir = "F:\SG1250_Data\Zscan\1-250Hz\";
 % Mat file name prefix, program will search related files in each folder
 MatFilePrefixCell = {"Lfile", "Hfile"};
@@ -51,7 +54,7 @@ for each_folder=1:length(SubFolderCell)
 							sub_folder_dir sub_folder_files MatFilePrefix VarNamePrefix FreqCell ...
 							setFontSize ExportFig ExportEmf ExportPng ExportTiff ...
 	                        ExportEps ExportSvg ExportResolution Freq MatFilePrefixCell VarNamePrefixCell...
-                            file_wanted
+                            file_wanted ZPD_low ZND_low ZPD_high ZND_high
 	        %% load file according to Low or High
 			disp(strcat("Loading ", file_wanted, " ..."))
 			load(strcat(sub_folder_dir, file_wanted{1}))
@@ -186,8 +189,90 @@ for each_folder=1:length(SubFolderCell)
 
     end
         
+    disp('Combining low and high frequency ZPD/ZND files ...')
+    sub_freq_dir = append(sub_folder_dir, '/1-2500Hz/');
+    mkdir(sub_freq_dir)
+    ZPD_all = [ZPD_low; ZPD_high];
+    ZND_all = [ZND_low; ZND_high];
 
-		
+    ZPD = ZPD_all;
+    ZND = ZND_all;
+    save(append(sub_freq_dir, '\', 'DATA_ZPD.mat'), 'ZPD')
+    save(append(sub_freq_dir, '\', 'DATA_ZPD_', SubFolderCell{each_folder}, '_', Freq,'.mat'), 'ZPD')
+    save(append(sub_freq_dir, '\', 'DATA_ZND.mat'), 'ZND')
+    save(append(sub_freq_dir, '\', 'DATA_ZND_', SubFolderCell{each_folder}, '_', Freq, '.mat'), 'ZND')
+
+    this_file_path = append(sub_freq_dir, '\ZP_BodePlot_', SubFolderCell{each_folder});
+    figure
+    set(gcf,'unit','centimeters','position',[10,5,18,8+3])
+    subplot(2,1,1);
+    semilogx(ZPD_all(:,1), 20*log10(ZPD_all(:,2)), '.-', 'MarkerIndices', 1:2:length(ZPD_all), 'color', 'k', ...
+	    'linewidth', 1.0, 'color', 'k');
+    xlabel('Frequency (Hz)');
+    ylabel('Amplitude (dB)');
+    title(append(SubFolderCell{each_folder}, ' - ', 'Positive Sequence'))
+    grid on
+    set(gca, 'fontname', 'Times new roman')
+    subplot(2,1,2);
+    semilogx(ZPD_all(:,1),ZPD_all(:,3), '.-', 'MarkerIndices', 1:2:length(ZPD_all), 'color', 'k', ...
+	    'linewidth', 1.0, 'color', 'k');
+    xlabel('Frequency (Hz)');
+    ylabel('Phase (Deg)');
+    grid on
+    set(gca, 'fontname', 'Times new roman')
+
+    if ExportFig == true
+        saveas(gcf, append(this_file_path, '.fig'))
+    end 
+    if ExportEmf == true
+        saveas(gcf, append(this_file_path, '.emf'))
+    end 
+    if ExportEps == true
+        saveas(gcf, append(this_file_path, '.eps'), 'epsc')
+    end 
+    if ExportPng == true
+        print(append(this_file_path, '.png'), '-dpng', append('-r', ExportResolution))
+    end 
+    if ExportTiff == true
+        print(append(this_file_path, '.tif'), '-dtiff', append('-r', ExportResolution))
+    end
+
+	this_file_path = append(sub_freq_dir, '\ZN_BodePlot_', SubFolderCell{each_folder});
+    figure
+    set(gcf,'unit','centimeters','position',[10,5,18,8+3])
+    subplot(2,1,1);
+    semilogx(ZND_all(:,1), 20*log10(ZND_all(:,2)), '.-', 'MarkerIndices', 1:2:length(ZND_all), 'color', 'k', ...
+	    'linewidth', 1.0, 'color', 'k');
+    xlabel('Frequency (Hz)');
+    ylabel('Amplitude (dB)');
+    title(append(SubFolderCell{each_folder}, ' - ', 'Negative Sequence'))
+    grid on
+    set(gca, 'fontname', 'Times new roman')
+    subplot(2,1,2);
+    semilogx(ZND_all(:,1),ZND_all(:,3), '.-', 'MarkerIndices', 1:2:length(ZND_all), 'color', 'k', ...
+	    'linewidth', 1.0, 'color', 'k');
+    xlabel('Frequency (Hz)');
+    ylabel('Phase (Deg)');
+    grid on
+    set(gca, 'fontname', 'Times new roman')
+
+    if ExportFig == true
+        saveas(gcf, append(this_file_path, '.fig'))
+    end 
+    if ExportEmf == true
+        saveas(gcf, append(this_file_path, '.emf'))
+    end 
+    if ExportEps == true
+        saveas(gcf, append(this_file_path, '.eps'), 'epsc')
+    end 
+    if ExportPng == true
+        print(append(this_file_path, '.png'), '-dpng', append('-r', ExportResolution))
+    end 
+    if ExportTiff == true
+        print(append(this_file_path, '.tif'), '-dtiff', append('-r', ExportResolution))
+    end
+
+    close all
 end				
 	
 	
