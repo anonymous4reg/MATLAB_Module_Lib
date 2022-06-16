@@ -1,17 +1,19 @@
 %% User could change here
-SrcDir = 'E:\HW_FuNing_data\';  % Your .mat file location
+SrcDir = 'D:\»ªÈñÎ¬ÚÐ-ScanData\LHVRT_New-v4\';  % Your .mat file location
 DstDir = SrcDir;  % where your doc will be generated
 
-WordFileName = 'rpt_autogen.doc';  % your doc name
+TimeStampStr = cellstr(datetime('now', 'Format', 'yyyy-MM-dd HH-mm-ss-SSS'));
+TimeStampStr = TimeStampStr{1};
+WordFileName = strcat('LHVRT-comparison-', TimeStampStr, '.docx');  % your doc name
 WordFileUrl = strcat(DstDir, WordFileName); 
-WordTitle = '¸§ÄþÔË´ïºÌÍû3.0MW';   % title of your report
+WordTitle = '»ªÈñÎ¬ÚÐ2.5MW';   % title of your report
 
-PrefixCell = {'VRT'};
-PhaseCell = {'3ph', '2ph'};
-DipCell = {'u20', 'u35', 'u50', 'u75', 'u130', 'u125', 'u120'};
-PostfixCell = {'p1.0', 'p0.2'};
-SubFolderCell = f_sequence_gen_recursive({PrefixCell, PhaseCell, DipCell, PostfixCell, }, '_');
-SubFolderCell = SubFolderCell{1};
+Field1 = {'VRT'};
+Field2 = {'3ph', '2ph'};
+Field3 = {'u20', 'u130'};
+Field4 = {'p1.0', 'p0.2'};
+SubFolderCell1 = f_sequence_gen_recursive({Field1, Field2, Field3, Field4}, '_');
+SubFolderCell = SubFolderCell1{1};
 
 
 %% Main program here
@@ -25,14 +27,17 @@ for file_idx=1:length(SubFolderCell)
 	disp(strcat('[', num2str(file_idx), '/', num2str(length(SubFolderCell)) , '] - ', ...
         'Working on: ', SubFolderCell{file_idx}))
     
-    fig_url = strcat(sub_folder_dir, '\', 'U+.emf');
-    fun_word_figure(fig_url, 'U+', WordFileUrl)
+    fig_url = strcat(sub_folder_dir, '\', 'Unified_Plot-Cmp.emf');
+    fun_word_figure(fig_url, 'Unified_Plot', WordFileUrl)
     
-    fig_url = strcat(sub_folder_dir, '\', 'PQ+.emf');
-    fun_word_figure(fig_url, 'PQ+', WordFileUrl)
+%     fig_url = strcat(sub_folder_dir, '\', 'U+.emf');
+%     fun_word_figure(fig_url, 'U+', WordFileUrl)
     
-    fig_url = strcat(sub_folder_dir, '\', 'IpIq+.emf');
-    fun_word_figure(fig_url, 'IpIq+', WordFileUrl)
+%     fig_url = strcat(sub_folder_dir, '\', 'PQ+.emf');
+%     fun_word_figure(fig_url, 'PQ+', WordFileUrl)
+%     
+%     fig_url = strcat(sub_folder_dir, '\', 'IpIq+.emf');
+%     fun_word_figure(fig_url, 'IpIq+', WordFileUrl)
     
 %     break
 

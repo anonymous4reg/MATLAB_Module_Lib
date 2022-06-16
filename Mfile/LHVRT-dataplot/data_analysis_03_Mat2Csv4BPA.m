@@ -6,7 +6,7 @@ clear;clc
 % ResampleTs = 10e-3 for BPA, 100e-6 for ADPSS
 ResampleTs = 10e-3;
 % ResampleTs = 100e-6;
-RootDir = "E:\20211028_华锐维帝\Veriv2p5MW_data\";
+RootDir = "E:\20211028_华锐维帝\Vertiv3MW_data\";
 
 
 % 
