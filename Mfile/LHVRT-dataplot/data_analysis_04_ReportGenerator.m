@@ -1,5 +1,5 @@
 %% User could change here
-SrcDir = 'D:\ЛЊШёЮЌка-ScanData\LHVRT_New-v4\';  % Your .mat file location
+SrcDir = 'D:\ЛЊШёЮЌка-ScanData\LHVRT_20220627-v3\';  % Your .mat file location
 DstDir = SrcDir;  % where your doc will be generated
 
 TimeStampStr = cellstr(datetime('now', 'Format', 'yyyy-MM-dd HH-mm-ss-SSS'));

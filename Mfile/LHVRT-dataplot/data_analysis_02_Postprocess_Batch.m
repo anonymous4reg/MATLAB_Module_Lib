@@ -3,7 +3,7 @@
 % __MatFilePrefix__ and __VarNamePrefix__, these two var act as
 % regular expression
 clear;clc
-RootDir = "D:\»ªÈñÎ¬ÚÐ-ScanData\LHVRT_New-v4\";
+RootDir = "D:\»ªÈñÎ¬ÚÐ-ScanData\LHVRT_20220627-v3\";
 t_range = 15;
 T_LHVRT_Iq_Test = 2.45;
 setFontSize = 10;
@@ -15,14 +15,14 @@ VarNamePrefix = "opvar";
 % Idle case processing
 Field1 = {'VRT'};
 Field2 = {'3ph', '2ph'};
-Field3 = {'u130'};
+Field3 = {'u20', 'u130'};
 Field4 = {'p1.0', 'p0.2'};
 % Field4 = {'idle'};  
 
 
 SubFolderCell2 = f_sequence_gen_recursive({Field1, Field2, Field3, Field4}, '_');
 SubFolderCell = SubFolderCell2{1};
-% SubFolderCell = {'VRT_3ph_u130_p0.2'};
+SubFolderCell = {'VRT_2ph_u130_p1.0'};
 
 
 ExportFig = true;

@@ -3,7 +3,7 @@
 % __MatFilePrefix__ and __VarNamePrefix__, these two var act as
 % regular expression
 clear;clc
-RootDirNew = "D:\»ªÈñÎ¬ÚÐ-ScanData\LHVRT_New-v4\";
+RootDirNew = "D:\»ªÈñÎ¬ÚÐ-ScanData\LHVRT_20220627-v3\";
 RootDirOld = "D:\»ªÈñÎ¬ÚÐ-ScanData\LHVRT_Old\";
 
 t_range = 15;
@@ -14,7 +14,7 @@ setFontSize = 10;
 % Idle case processing
 Field1 = {'VRT'};
 Field2 = {'3ph', '2ph'};
-Field3 = {'u130'};
+Field3 = {'u20', 'u130'};
 Field4 = {'p1.0', 'p0.2'};
 
 
@@ -22,7 +22,7 @@ Field4 = {'p1.0', 'p0.2'};
 SubFolderCell2 = f_sequence_gen_recursive({Field1, Field2, Field3, Field4}, '_');
 SubFolderCell = SubFolderCell2{1};
 
-% SubFolderCell = {'VRT_3ph_u20_p1.0'};
+SubFolderCell = {'VRT_2ph_u130_p1.0'};
 
 ExportFig = true;
 ExportEmf = true;

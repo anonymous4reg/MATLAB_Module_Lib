@@ -33,7 +33,7 @@ function [outputArg1] = f_savefig(arg_save_dir, arg_file_name, arg_format_cell, 
 		elseif strcmp(this_format, 'jpg') == true
 			ExportJpg = true;
 		elseif strcmp(this_format, 'tif') == true
-			ExportTiff = true;
+			ExportTif = true;
 		else
 			fprintf("Unsupported format: %s, this will be ignored\n", this_format)
 		end
@@ -60,7 +60,7 @@ function [outputArg1] = f_savefig(arg_save_dir, arg_file_name, arg_format_cell, 
 		fprintf('Saving %s ...\n', strcat(arg_file_name, '.jpg'))
 	    print(file_url, '-djpeg', append('-r', ExportResolution))
 	end 
-	if ExportTiff == true
+	if ExportTif == true
 		fprintf('Saving %s ...\n', strcat(arg_file_name, '.tif'))
 	    print(file_url, '-dtiff', append('-r', ExportResolution))
 	end 
