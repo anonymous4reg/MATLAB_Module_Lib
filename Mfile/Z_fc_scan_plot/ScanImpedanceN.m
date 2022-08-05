@@ -1,4 +1,4 @@
-function ScanImpedance1(NN,Data,Freq_begin,Freq_end,Freq_step, arg_save_dir)
+function [In2,Vn2,In_coupled2,Vn_coupled2] = ScanImpedance2(Freq_begin,Freq_end,Freq_step,NN,Data)
 
 Data = cell2mat(struct2cell(Data));
 scan_concat=Data;
@@ -15,7 +15,7 @@ f_num=(f_end-f_start)/f_step+1;
 
 for ff =f_start:f_step:f_end   
 
-    ff_coupled=2*50-ff;
+    ff_coupled=2*50-(-ff);
     ff_num=(ff-f_start)/f_step; %从0开始
     ff_num_coupled=(ff_coupled-f_start)/f_step; %从0开始
     
@@ -122,34 +122,19 @@ for ff =f_start:f_step:f_end
     Ics_mag  = magIcs(ff +1);
     Ics_phase  = phaseIcs(ff +1);
 
-	if ff_coupled<0
-		ff_coupled1 = 0-ff_coupled;
-		Uas_coupled_mag  = magUas(ff_coupled1 +1);
-		Uas_coupled_phase  = -phaseUas(ff_coupled1 +1);
-		Ubs_coupled_mag  = magUbs(ff_coupled1 +1);
-		Ubs_coupled_phase  = -phaseUbs(ff_coupled1 +1);
-		Ucs_coupled_mag  = magUcs(ff_coupled1 +1);
-		Ucs_coupled_phase  = -phaseUcs(ff_coupled1 +1);
-		Ias_coupled_mag  = magIas(ff_coupled1+1);
-		Ias_coupled_phase  = -phaseIas(ff_coupled1 +1);
-		Ibs_coupled_mag  = magIbs(ff_coupled1 +1);
-		Ibs_coupled_phase  = -phaseIbs(ff_coupled1 +1);
-		Ics_coupled_mag  = magIcs(ff_coupled1 +1);
-		Ics_coupled_phase  = -phaseIcs(ff_coupled1 +1);
-	else
-		Uas_coupled_mag  = magUas(ff_coupled +1);
-		Uas_coupled_phase  = phaseUas(ff_coupled +1);
-		Ubs_coupled_mag  = magUbs(ff_coupled +1);
-		Ubs_coupled_phase  = phaseUbs(ff_coupled +1);
-		Ucs_coupled_mag  = magUcs(ff_coupled +1);
-		Ucs_coupled_phase  = phaseUcs(ff_coupled +1);
-		Ias_coupled_mag  = magIas(ff_coupled+1);
-		Ias_coupled_phase  = phaseIas(ff_coupled +1);
-		Ibs_coupled_mag  = magIbs(ff_coupled +1);
-		Ibs_coupled_phase  = phaseIbs(ff_coupled +1);
-		Ics_coupled_mag  = magIcs(ff_coupled +1);
-		Ics_coupled_phase  = phaseIcs(ff_coupled +1);
-	end
+    Uas_coupled_mag  = magUas(ff_coupled +1);
+    Uas_coupled_phase  = phaseUas(ff_coupled +1);
+    Ubs_coupled_mag  = magUbs(ff_coupled +1);
+    Ubs_coupled_phase  = phaseUbs(ff_coupled +1);
+    Ucs_coupled_mag  = magUcs(ff_coupled +1);
+    Ucs_coupled_phase  = phaseUcs(ff_coupled +1);
+    Ias_coupled_mag  = magIas(ff_coupled+1);
+    Ias_coupled_phase  = phaseIas(ff_coupled +1);
+    Ibs_coupled_mag  = magIbs(ff_coupled +1);
+    Ibs_coupled_phase  = phaseIbs(ff_coupled +1);
+    Ics_coupled_mag  = magIcs(ff_coupled +1);
+    Ics_coupled_phase  = phaseIcs(ff_coupled +1);
+
 
 	% 数据格式 [Frequency, MagA, PhaseA, MagB, PhaseB, MagC, PhaseC]
     V0=[f0,Ua0_mag,Ua0_phase,Ub0_mag,Ub0_phase,Uc0_mag,Uc0_phase];
@@ -174,84 +159,46 @@ for ff =f_start:f_step:f_end
 	Vn_coupled(ff_num+1) = (VACP_coupled (:,2).*exp(1i*VACP_coupled (:,3))+VACP_coupled (:,4).*exp(1i*(VACP_coupled(:,5)-2*pi/3))+VACP_coupled (:,6).*exp(1i*(VACP_coupled(:,7)+2*pi/3)))/3;
 
     ff_count=ff_num+1;
-    magIp=abs(Ip(ff_count));phaseIp=angle(Ip(ff_count))-angle0;
-    magIp_coupled=abs(Ip_coupled(ff_count));phaseIp_coupled=angle(Ip_coupled(ff_count))-angle0;
-    magVp=abs(Vp(ff_count));phaseVp=angle(Vp(ff_count))-angle0;
-    magVp_coupled=abs(Vp_coupled(ff_count));phaseVp_coupled=angle(Vp_coupled(ff_count))-angle0;
+    magIp=abs(Ip(ff_count));
+    phaseIp=angle(Ip(ff_count))-angle0;
+    magIp_coupled=abs(Ip_coupled(ff_count));
+    phaseIp_coupled=angle(Ip_coupled(ff_count))-angle0;
+    magVp=abs(Vp(ff_count));
+    phaseVp=angle(Vp(ff_count))-angle0;
+    magVp_coupled=abs(Vp_coupled(ff_count));
+    phaseVp_coupled=angle(Vp_coupled(ff_count))-angle0;
     Ip(ff_count)=magIp*cos(phaseIp)+1i*magIp*sin(phaseIp);
     Ip_coupled(ff_count)=magIp_coupled*cos(phaseIp_coupled)+1i*magIp_coupled*sin(phaseIp_coupled);
     Vp(ff_count)=magVp*cos(phaseVp)+1i*magVp*sin(phaseVp);
     Vp_coupled(ff_count)=magVp_coupled*cos(phaseVp_coupled)+1i*magVp_coupled*sin(phaseVp_coupled);
     
-%     
-% 	% 阻抗矩阵
-% 	Zp = Vp./Ip;
-% 	Zn = Vn./In;
-% 
-% 	%Zp = abs(Uas_fft./Ias_fft);
-% 
-% 	Ia = IACP (:,2).*exp(1i*IACP (:,3));
-% 	Va = VACP (:,2).*exp(1i*VACP (:,3));
-% 	Za= Va./Ia;
-% 	% 
-% 	% Ib = IACP (:,4).*exp(1i*IACP (:,5));
-% 	% Vb = VACP (:,4).*exp(1i*VACP (:,5));
-% 	% Zb= Vb./Ib
-% 	% 
-% 	% Ic = IACP (:,6).*exp(1i*IACP (:,7));
-% 	% Vc = VACP (:,6).*exp(1i*VACP (:,7));
-% 	% Zc= Vc./Ic
-% 
-% 	% 阻抗相角折算至±180°之间
-% 	Zpx_phase=angle(Zp)*180/pi;
-% 	Znx_phase=angle(Zn)*180/pi;
-% 	Zax_phase=angle(Za)*180/pi;
-% 
-% 	if ff<=50 & Zpx_phase<-110
-% 	    Zpx_phase = Zpx_phase + 360;
-% 	end
-% 	if (ff>50 & ff<100) & Zpx_phase>120
-% 	    Zpx_phase = Zpx_phase - 360;
-% 	end    
-% 
-% 	%Zpx_phase=angle(Zp)*180/pi;
-% 
-% 	ZP(ff_num+1,:) = [ff,abs(Zp), Zpx_phase];
-% 	ZN (ff_num+1,:)= [ff,abs(Zn), Znx_phase];
-% 	ZA (ff_num+1,:)= [ff,abs(Za), Zax_phase];
+    magIn=abs(In(ff_count));
+    phaseIn=-angle(In(ff_count))-angle0;
+    magIn_coupled=abs(In_coupled(ff_count));
+    phaseIn_coupled=angle(In_coupled(ff_count))-angle0;
+    magVn=abs(Vn(ff_count));
+    phaseVn=-angle(Vn(ff_count))-angle0;
+    magVn_coupled=abs(Vn_coupled(ff_count));
+    phaseVn_coupled=angle(Vn_coupled(ff_count))-angle0;
+    In(ff_count)=magIn*cos(phaseIn)+1i*magIn*sin(phaseIn);
+    In_coupled(ff_count)=magIn_coupled*cos(phaseIn_coupled)+1i*magIn_coupled*sin(phaseIn_coupled);
+    Vn(ff_count)=magVn*cos(phaseVn)+1i*magVn*sin(phaseVn);
+    Vn_coupled(ff_count)=magVn_coupled*cos(phaseVn_coupled)+1i*magVn_coupled*sin(phaseVn_coupled);
+    
+
 %     
 end
 
-Ip1 = Ip;
-In1 = In;
-Vp1 = Vp;
-Vn1 = Vn;
-Ip_coupled1 = Ip_coupled;
-In_coupled1 = In_coupled;
-Vp_coupled1 = Vp_coupled;
-Vn_coupled1 = Vn_coupled;
-% save Ip1 Ip1;
-% % save In1 In1;
-% save Vp1 Vp1;
-% % save Vn1 Vn1;
-% save Ip_coupled1 Ip_coupled1;
-% % save In_coupled1 In_coupled1;% 
-% save Vp_coupled1 Vp_coupled1;
-% % save Vn_coupled1 Vn_coupled1;
 
-save(strcat(arg_save_dir, '\', 'Ip1'), 'Ip1')
-save(strcat(arg_save_dir, '\', 'Vp1'), 'Vp1')
-save(strcat(arg_save_dir, '\', 'Ip_coupled1'), 'Ip_coupled1')
-save(strcat(arg_save_dir, '\', 'Vp_coupled1'), 'Vp_coupled1')
 
-% Ip2 = Ip;
-% In2 = In;
-% Vp2 = Vp;
-% Vn2 = Vn;
-% Ip_coupled2 = Ip_coupled;
-% In_coupled2 = In_coupled;
-% Vp_coupled2 = Vp_coupled;
-% Vn_coupled2 = Vn_coupled;
+Ip2 = Ip;
+In2 = In;
+Vp2 = Vp;
+Vn2 = Vn;
+Ip_coupled2 = Ip_coupled;
+In_coupled2 = In_coupled;
+Vp_coupled2 = Vp_coupled;
+Vn_coupled2 = Vn_coupled;
 % save Ip2 Ip2;
 % % save In2 In2;
 % save Vp2 Vp2;
@@ -260,39 +207,5 @@ save(strcat(arg_save_dir, '\', 'Vp_coupled1'), 'Vp_coupled1')
 % % save In_coupled2 In_coupled2;
 % save Vp_coupled2 Vp_coupled2;
 % % save Vn_coupled2 Vn_coupled2;
-
-
-
-
-
-
-% save ZN;
-
-% figure
-% subplot(2,1,1);
-% plot(ZP(:,1),ZP(:,2));
-% xlabel('频率（Hz)');
-% ylabel('幅值（Ohm)');
-% subplot(2,1,2);
-% plot(ZP(:,1),ZP(:,3));
-% xlabel('频率（Hz)');
-% ylabel('相角（度)');
-
-% figure
-% subplot(2,1,1);
-% plot(ZA(:,1),20*log(ZA(:,2)));
-% xlabel('频率（Hz)');
-% ylabel('幅值（dB)');
-% subplot(2,1,2);
-% plot(ZA(:,1),ZA(:,3));
-% xlabel('频率（Hz)');
-% ylabel('相角（度)');
-% 
-% save([case_name, '/', 'DATA_ZP', '.mat'], 'ZP')
-% saveas(gca, [case_name, '/', 'ImpedanceScan.png'])
-% saveas(gca, [case_name, '/', 'ImpedanceScan.fig'])
-% saveas(gca, [case_name, '/', 'ImpedanceScan.emf'])
-
-% close all
 
 

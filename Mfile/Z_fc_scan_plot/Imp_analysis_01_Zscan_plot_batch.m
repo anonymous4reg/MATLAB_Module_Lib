@@ -2,7 +2,7 @@
 % modified by Yamin, 2021/11/12
 % description: process Low and High freq and combine them in one .m file
 clear;clc
-RootDir = "C:\Users\anony\Desktop\ZscanData\";
+RootDir = 'C:\Users\ym\Desktop\test\';
 % RootDir = "F:\SG1250_Data\Zscan\1-250Hz\";
 % Mat file name prefix, program will search related files in each folder
 MatFilePrefixCell = {"Lfile", "Hfile"};
