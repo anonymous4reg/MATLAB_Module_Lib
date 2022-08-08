@@ -32,9 +32,9 @@ NN=1/Step*10^6;
 for i=1:length(NameMatrix)
 
     filename = [NameMatrix{i}];
-    OutRoot=[SrcFileDir, '\', OutSubDir, '\'];
+    OutRoot=strcat(SrcFileDir, '\', OutSubDir, '\');
     mkdir(OutRoot);
-    Data = load([SrcFileDir, '\', filename  '.mat']);
+    Data = load(strcat(SrcFileDir, '\', filename,  '.mat'));
    %% º∆À„1~100Hz
     
     [Ip_f_1_350,Vp_f_1_350,Ip_coupled1_350,Vp_coupled1_350] = ScanImpedanceP(Freq_begin,Freq_end,Freq_step,NN,Data);

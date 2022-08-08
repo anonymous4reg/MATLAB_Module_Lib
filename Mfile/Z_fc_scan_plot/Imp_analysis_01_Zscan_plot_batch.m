@@ -57,121 +57,111 @@ for each_folder=1:length(SubFolderCell)
                             file_wanted ZPD_low ZND_low ZPD_high ZND_high
 	        %% load file according to Low or High
 			disp(strcat("Loading ", file_wanted, " ..."))
-			load(strcat(sub_folder_dir, file_wanted{1}))
-			
-			var_name_found = who;
-			var_name_found = var_name_found(~cellfun(@isempty, regexpi(var_name_found, strcat(VarNamePrefix, '.*'))));
-			if length(var_name_found) == 1
-				scan_0 = eval(var_name_found{1});
 
-                try
-                    if strcmp(Freq, 'Low') == 1
-                        U_I_Z_F
-                        sub_freq_dir = append(sub_folder_dir, '/1-250Hz/');
-                        ZPD_low = ZP;
-                        ZND_low = ZN;
-                    elseif strcmp(Freq, 'High') == 1
-                        U_I_Z_F_10hz
-                        sub_freq_dir = append(sub_folder_dir, '/250-2500Hz/');
-                        ZPD_high = ZP;
-                        ZND_high = ZN;
-                    else
-                        disp('Please set __Freq__ properly, either Low or High')
-                    end
+			% load(strcat(sub_folder_dir, file_wanted{1}))
+			file_to_process_url = strcat(sub_folder_dir, file_wanted{1});
+
+            try
+                if strcmp(Freq, 'Low') == 1
+                    file_name_splite = split(file_wanted{1}, '.');
+                    file_name_without_postfix = file_name_splite{1};
+                    SrcFileDir  =   sub_folder_dir;
+                    FileName    =   file_name_without_postfix;
+                    Freq_begin  =   1;
+                    Freq_middle =   100;
+                    Freq_end    =   350;
+                    Freq_step   =   1;
+                    SampleTimeMicroSecond  =   100; % Sample time of data(us)
+                    SaveTempsFlag = true;
                     
-                    mkdir(sub_freq_dir)
-                    %% Save mat file
-                    ZPD=ZP;
-                    save(append(sub_freq_dir, '\', 'DATA_ZPD.mat'), 'ZPD')
-                    save(append(sub_freq_dir, '\', 'DATA_ZPD_', SubFolderCell{each_folder}, '_', Freq,'.mat'), 'ZPD')
-                    ZND=ZN;
-                    save(append(sub_freq_dir, '\', 'DATA_ZND.mat'), 'ZND')
-                    save(append(sub_freq_dir, '\', 'DATA_ZND_', SubFolderCell{each_folder}, '_', Freq, '.mat'), 'ZND')
+                    %% DON NOT Change this block !!!
+                    CmdCell = {
+                        SrcFileDir, FileName, Freq_begin, Freq_middle, ...
+                        Freq_end, Freq_step, SampleTimeMicroSecond, SaveTempsFlag};
                     
-                    %%
-                    this_file_path = append(sub_freq_dir, '\ZP_BodePlot_', SubFolderCell{each_folder});
-				    figure
-				    set(gcf,'unit','centimeters','position',[10,5,18,8+3])
-				    subplot(2,1,1);
-				    plot(ZP(:,1), 20*log10(ZP(:,2)), '.-', 'MarkerIndices', 1:2:length(ZP), 'color', 'k', ...
-					    'linewidth', 1.0, 'color', 'k');
-				    xlabel('Frequency (Hz)');
-				    ylabel('Amplitude (dB)');
-				    title(append(SubFolderCell{each_folder}, ' - ', 'Positive Sequence'))
-				    grid on
-				    set(gca, 'fontname', 'Times new roman')
-				    subplot(2,1,2);
-				    plot(ZP(:,1),ZP(:,3), '.-', 'MarkerIndices', 1:2:length(ZP), 'color', 'k', ...
-					    'linewidth', 1.0, 'color', 'k');
-				    xlabel('Frequency (Hz)');
-				    ylabel('Phase (Deg)');
-				    grid on
-				    set(gca, 'fontname', 'Times new roman')
+                    sub_freq_dir = append(sub_folder_dir, '/1-250Hz/');
+                    [ZPD_SISO, ZND_SISO] = AutoZscan2ZPN(CmdCell);
+                    ZPD_low = ZPD_SISO;
+                    ZND_low = ZND_SISO;
+                elseif strcmp(Freq, 'High') == 1
+                    tmp_data = load(strcat(sub_folder_dir, file_wanted{1}));
+                    tmp_data = struct2cell(tmp_data); tmp_data = cell2mat(tmp_data);
+                    Freq_begin  =   250;
+                    Freq_end    =   2500;
+                    Freq_step   =   10;
+                    SampleTimeMicroSecond = 20;
+                    [ZPD_SISO, ZND_SISO] = U_I_Z_F_StepAuto(tmp_data, Freq_begin, Freq_end, Freq_step, SampleTimeMicroSecond);
+                    sub_freq_dir = append(sub_folder_dir, '/250-2500Hz/');
+                    ZPD_high = ZPD_SISO;
+                    ZND_high = ZND_SISO;
+%                     mkdir(sub_freq_dir)
+%                     save(strcat(sub_freq_dir, '\', 'DATA_ZPD_SISO'), 'DATA_ZPD_SISO')
+%                     save(strcat(sub_freq_dir, '\', 'DATA_ZND_SISO'), 'DATA_ZND_SISO')
+                else
+                    disp('Please set __Freq__ properly, either Low or High')
+                end
+                
+                mkdir(sub_freq_dir)
+                %% Save mat file
+                ZPD=ZPD_SISO;
+                save(append(sub_freq_dir, '\', 'DATA_ZPD.mat'), 'ZPD')
+%                 save(append(sub_freq_dir, '\', 'DATA_ZPD_', SubFolderCell{each_folder}, '_', Freq,'.mat'), 'ZPD')
+                ZND=ZND_SISO;
+                save(append(sub_freq_dir, '\', 'DATA_ZND.mat'), 'ZND')
+%                 save(append(sub_freq_dir, '\', 'DATA_ZND_', SubFolderCell{each_folder}, '_', Freq, '.mat'), 'ZND')
+                
+                %%
+                this_file_path = append(sub_freq_dir, '\ZP_BodePlot_', SubFolderCell{each_folder});
+			    figure
+			    set(gcf,'unit','centimeters','position',[10,5,18,8+3])
+			    subplot(2,1,1);
+			    plot(ZPD(:,1), 20*log10(ZPD(:,2)), '.-', 'MarkerIndices', 1:2:length(ZPD), 'color', 'k', ...
+				    'linewidth', 1.0, 'color', 'k');
+			    xlabel('Frequency (Hz)');
+			    ylabel('Amplitude (dB)');
+			    title(append(SubFolderCell{each_folder}, ' - ', 'Positive Sequence'))
+			    grid on
+			    set(gca, 'fontname', 'Times new roman')
+			    subplot(2,1,2);
+			    plot(ZPD(:,1),ZPD(:,3), '.-', 'MarkerIndices', 1:2:length(ZPD), 'color', 'k', ...
+				    'linewidth', 1.0, 'color', 'k');
+			    xlabel('Frequency (Hz)');
+			    ylabel('Phase (Deg)');
+			    grid on
+			    set(gca, 'fontname', 'Times new roman')
 
-				    if ExportFig == true
-	                    saveas(gcf, append(this_file_path, '.fig'))
-	                end 
-	                if ExportEmf == true
-	                    saveas(gcf, append(this_file_path, '.emf'))
-	                end 
-	                if ExportEps == true
-	                    saveas(gcf, append(this_file_path, '.eps'), 'epsc')
-	                end 
-	                if ExportPng == true
-	                    print(append(this_file_path, '.png'), '-dpng', append('-r', ExportResolution))
-	                end 
-	                if ExportTiff == true
-	                    print(append(this_file_path, '.tif'), '-dtiff', append('-r', ExportResolution))
-	                end
-                    
 
-                    this_file_path = append(sub_freq_dir, '\ZN_BodePlot_', SubFolderCell{each_folder});
-				    figure
-				    set(gcf,'unit','centimeters','position',[10,5,18,8+3])
-				    subplot(2,1,1);
-				    plot(ZN(:,1), 20*log10(ZN(:,2)), '.-', 'MarkerIndices', 1:2:length(ZN), 'color', 'k', ...
-					    'linewidth', 1.0, 'color', 'k');
-				    xlabel('Frequency (Hz)');
-				    ylabel('Amplitude (dB)');
-				    title(append(SubFolderCell{each_folder}, ' - ', 'Negative Sequence'))
-				    grid on
-				    set(gca, 'fontname', 'Times new roman')
-				    subplot(2,1,2);
-				    plot(ZN(:,1),ZN(:,3), '.-', 'MarkerIndices', 1:2:length(ZN), 'color', 'k', ...
-					    'linewidth', 1.0, 'color', 'k');
-				    xlabel('Frequency (Hz)');
-				    ylabel('Phase (Deg)');
-				    grid on
-				    set(gca, 'fontname', 'Times new roman')
-
-				    if ExportFig == true
-	                    saveas(gcf, append(this_file_path, '.fig'))
-	                end 
-	                if ExportEmf == true
-	                    saveas(gcf, append(this_file_path, '.emf'))
-	                end 
-	                if ExportEps == true
-	                    saveas(gcf, append(this_file_path, '.eps'), 'epsc')
-	                end 
-	                if ExportPng == true
-	                    print(append(this_file_path, '.png'), '-dpng', append('-r', ExportResolution))
-	                end 
-	                if ExportTiff == true
-	                    print(append(this_file_path, '.tif'), '-dtiff', append('-r', ExportResolution))
-	                end
                 
 
-                close all
+                this_file_path = append(sub_freq_dir, '\ZN_BodePlot_', SubFolderCell{each_folder});
+			    figure
+			    set(gcf,'unit','centimeters','position',[10,5,18,8+3])
+			    subplot(2,1,1);
+			    plot(ZND(:,1), 20*log10(ZND(:,2)), '.-', 'MarkerIndices', 1:2:length(ZND), 'color', 'k', ...
+				    'linewidth', 1.0, 'color', 'k');
+			    xlabel('Frequency (Hz)');
+			    ylabel('Amplitude (dB)');
+			    title(append(SubFolderCell{each_folder}, ' - ', 'Negative Sequence'))
+			    grid on
+			    set(gca, 'fontname', 'Times new roman')
+			    subplot(2,1,2);
+			    plot(ZND(:,1),ZND(:,3), '.-', 'MarkerIndices', 1:2:length(ZND), 'color', 'k', ...
+				    'linewidth', 1.0, 'color', 'k');
+			    xlabel('Frequency (Hz)');
+			    ylabel('Phase (Deg)');
+			    grid on
+			    set(gca, 'fontname', 'Times new roman')
 
-                catch ME
-                    disp('something wrong')
-                    rethrow(ME)  % debug only
-                end
-            else
-        	    disp(strcat("Multiple variables found in ", sub_folder_dir, sub_folder_files{1}))
-			    disp(var_name_found)
-			    disp("Please check your mat file! Pass...")
-	        end	
+
+            
+
+            close all
+
+            catch ME
+                disp('something wrong')
+                rethrow(ME)  % debug only
+            end
+
         elseif length(sub_folder_files) > 1
         % If multiple .mat file founded, then leave this folder untouched.
             disp(strcat("Multiple ", MatFilePrefix, "*.mat files found in folder: ", sub_folder_dir))

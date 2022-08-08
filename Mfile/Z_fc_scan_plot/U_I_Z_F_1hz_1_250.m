@@ -21,9 +21,9 @@ UA=Impedance_scan(3,((ff-f_start)*NN+1):((ff-f_start)*NN+N));
 UB=Impedance_scan(4,((ff-f_start)*NN+1):((ff-f_start)*NN+N));
 UC=Impedance_scan(5,((ff-f_start)*NN+1):((ff-f_start)*NN+N));
 
-IA=-Impedance_scan(6,((ff-f_start)*NN+1):((ff-f_start)*NN+N));
-IB=-Impedance_scan(7,((ff-f_start)*NN+1):((ff-f_start)*NN+N));
-IC=-Impedance_scan(8,((ff-f_start)*NN+1):((ff-f_start)*NN+N));
+IA=Impedance_scan(6,((ff-f_start)*NN+1):((ff-f_start)*NN+N));
+IB=Impedance_scan(7,((ff-f_start)*NN+1):((ff-f_start)*NN+N));
+IC=Impedance_scan(8,((ff-f_start)*NN+1):((ff-f_start)*NN+N));
 
 % figure;
 % subplot(2,3,1)

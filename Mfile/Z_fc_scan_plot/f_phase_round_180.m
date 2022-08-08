@@ -1,4 +1,4 @@
-function dst_phase_vector = phase_to_180(inputArg)
+function dst_phase_vector = f_phase_round_180(inputArg)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
 src_phase_vector = inputArg;
