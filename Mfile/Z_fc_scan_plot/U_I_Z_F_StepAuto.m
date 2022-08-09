@@ -171,12 +171,15 @@ for ff =f_start:f_step:(f_end)
 	Znx_phase=angle(Zn)*180/pi;
 	Zax_phase=angle(Za)*180/pi;
 
-	if ff<=50 & Zpx_phase<-110
-	    Zpx_phase = Zpx_phase + 360;
-	end
-	if (ff>50 & ff<100) & Zpx_phase>120
-	    Zpx_phase = Zpx_phase - 360;
-	end    
+    Zpx_phase = f_phase_round_180(Zpx_phase);
+    Znx_phase = f_phase_round_180(Znx_phase);
+    Zax_phase = f_phase_round_180(Zax_phase);
+% 	if ff<=50 & Zpx_phase<-110
+% 	    Zpx_phase = Zpx_phase + 360;
+% 	end
+% 	if (ff>50 & ff<100) & Zpx_phase>120
+% 	    Zpx_phase = Zpx_phase - 360;
+% 	end    
 
 	%Zpx_phase=angle(Zp)*180/pi;
 
