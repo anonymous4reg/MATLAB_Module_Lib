@@ -2,7 +2,7 @@ function [retZPDSISO, retZNDSISO, ...
           retZPDMIMO, retZNDMIMO] = AutoZscan2ZPN(InputCmdCell)
 
 SrcFileDir  =   InputCmdCell{1};
-NameMatrix  = { InputCmdCell{2} };
+NameMatrix  =   InputCmdCell{2};
 Freq_begin  =   InputCmdCell{3};
 Freq_middle =   InputCmdCell{4};
 Freq_end    =   InputCmdCell{5};
@@ -32,7 +32,7 @@ NN=1/Step*10^6;
 for i=1:length(NameMatrix)
 
     filename = [NameMatrix{i}];
-    OutRoot=strcat(SrcFileDir, '\', OutSubDir, '\');
+    OutRoot=strcat(SrcFileDir, '\', OutSubDir, '\', filename, '\');
     mkdir(OutRoot);
     Data = load(strcat(SrcFileDir, '\', filename,  '.mat'));
    %% º∆À„1~100Hz
@@ -92,6 +92,49 @@ for i=1:length(NameMatrix)
         save(strcat(OutRoot, 'Ip_coupled2.mat'), 'Ip_coupled2')
         save(strcat(OutRoot, 'Ip_coupled3.mat'), 'Ip_coupled3')
         save(strcat(OutRoot, 'Ip_coupled4.mat'), 'Ip_coupled4')
+
+        figure
+        subplot(2,1,1);
+        plot(ZPD(:,1),20*log10(ZPD(:,2)),'k');
+        hold on;
+        title('Positive sequence')
+        xlabel('Frequency (Hz)');
+        ylabel('Magnitude (dB)');
+        grid on
+        set(gca, 'fontname', 'times new roman', 'fontsize', 14)
+    
+        subplot(2,1,2);
+        plot(ZPD(:,1),ZPD(:,3),'k');
+        hold on;
+        xlabel('Frequency (Hz)');
+        ylabel('Phase (deg)');
+        grid on
+        set(gca, 'fontname', 'times new roman', 'fontsize', 14)
+        set(gcf, 'unit', 'centimeters', 'innerposition', [5, 5, 5+28, 5+14])
+        f_savefig(OutRoot, 'DATA_ZPD', {'fig', 'png'}, 300)
+    
+        
+        figure
+        subplot(2,1,1);
+        plot(ZND(:,1),20*log10(ZND(:,2)),'k');
+        hold on;
+        title('Negative sequence')
+        xlabel('Frequency (Hz)');
+        ylabel('Magnitude (dB)');
+        grid on
+        set(gca, 'fontname', 'times new roman', 'fontsize', 14)
+    
+        subplot(2,1,2);
+        plot(ZND(:,1),ZND(:,3),'k');
+        hold on;
+        xlabel('Frequency (Hz)');
+        ylabel('Phase (deg)');
+        grid on
+        set(gca, 'fontname', 'times new roman', 'fontsize', 14)
+        set(gcf, 'unit', 'centimeters', 'innerposition', [5, 5, 5+28, 5+14])
+        f_savefig(OutRoot, 'DATA_ZND', {'fig', 'png'}, 300)
+        
+        close all
     end
 
 

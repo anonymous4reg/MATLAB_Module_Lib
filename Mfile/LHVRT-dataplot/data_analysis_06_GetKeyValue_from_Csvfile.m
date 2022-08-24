@@ -17,11 +17,13 @@ OutFileName = 'KeyValue4Bpa';  % Output file name 输出文件名
 
 Field1 = {'vrt'};
 Field2 = {'3ph', '2ph'};
-Field3 = {'u20', 'u50', 'u90', 'u120', 'u125', 'u130'};
-Field4 = {'q1.0', 'q0.2', 'q-0.2', 'q-1.0'};
+% Field3 = {'u20', 'u50', 'u90', 'u120', 'u125', 'u130'};
+Field3 = {'20%', '35%', '50%', '75%', '120%', '125%', '130%'};
+% Field4 = {'q1.0', 'q0.2', 'q-0.2', 'q-1.0'};
+Field4 = {'big', 'small'};
 
 
-SubFolderCell2 = f_sequence_gen_recursive({Field1, Field2, Field3, Field4}, '_');
+SubFolderCell2 = f_sequence_gen_recursive({Field1, Field3, Field2, Field4}, '_');
 SubFolderCell = SubFolderCell2{1};
 
 %% Sample time of your CSV time series data
@@ -36,8 +38,8 @@ t_after = 2.14/Ts;  % during LHVRT
 % Define each column of your CSV table, 
 % this helps the program to know what's the meaning of each column
 % TableHead = {'t', 'u', 'p', 'q', 'ip', 'iq'};
-% TableHead = {'t', 'u', 'p', 'q', 'ip', 'iq'};
-TableHead = {'t', 'U1', 'Q', 'Iq'};
+TableHead = {'t', 'u', 'p', 'q', 'ip', 'iq'};
+% TableHead = {'t', 'U1', 'Q', 'Iq'};
 which_col_is_u = 2;
 which_col_is_iq = 4;
 which_col_is_ip = 5;
@@ -45,11 +47,11 @@ which_col_is_ip = 5;
 %% table head for key value csv table
 % 生成的关键数据表的表头，按需修改。 
 % 风机光伏
-% ReturnTableHead = {'Fault Type', 'u_before', 'iq_before', 'ip_before' ...
-% 			'u_after', 'iq_after', 'ip_after'};
+ReturnTableHead = {'Fault Type', 'u_before', 'iq_before', 'ip_before' ...
+			'u_after', 'iq_after', 'ip_after'};
 % SVG
-ReturnTableHead = {'Fault Type', 'u_before', 'iq_before', ...
-            'u_after', 'iq_after'};
+% ReturnTableHead = {'Fault Type', 'u_before', 'iq_before', ...
+%             'u_after', 'iq_after'};
 ret_cell = {};
 
 %% Main program here
@@ -68,20 +70,20 @@ for each_file=1:length(SubFolderCell)
     % before fault
     u_before = csv_table{t_before, TableHead{which_col_is_u}};
     iq_before = csv_table{t_before, TableHead{which_col_is_iq}};
-%     ip_before = csv_table{t_before, TableHead{which_col_is_ip}};
+    ip_before = csv_table{t_before, TableHead{which_col_is_ip}};
     % after fault
     u_after = csv_table{t_after, TableHead{which_col_is_u}};
     iq_after = csv_table{t_after, TableHead{which_col_is_iq}};
-%     ip_after = csv_table{t_after, TableHead{which_col_is_ip}};
+    ip_after = csv_table{t_after, TableHead{which_col_is_ip}};
 
     %% WT ou PV
-%     tmp_cell = {SubFolderCell{each_file}, ...
-%                 u_before, iq_before, ip_before ...
-%     			u_after, iq_after, ip_after};
-    %% SVG
     tmp_cell = {SubFolderCell{each_file}, ...
-                u_before, iq_before ...
-                u_after, iq_after};
+                u_before, iq_before, ip_before ...
+    			u_after, iq_after, ip_after};
+    %% SVG
+%     tmp_cell = {SubFolderCell{each_file}, ...
+%                 u_before, iq_before ...
+%                 u_after, iq_after};
 
     ReturnTableHead = [ReturnTableHead; tmp_cell];
 %     break
