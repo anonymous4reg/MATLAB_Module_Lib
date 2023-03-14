@@ -8,7 +8,7 @@ N=NN*1;
 
 
 f_start=250;
-f_end=2490;
+f_end=2500;
 
 ZP=zeros((f_end-f_start)/10+1,3);
 ZN=zeros((f_end-f_start)/10+1,3);
@@ -168,6 +168,8 @@ Za= Va./Ia;
 Zpx_phase=angle(Zp)*180/pi;
 Znx_phase=angle(Zn)*180/pi;
 
+Zpx_phase = phase_to_180(Zpx_phase);
+Znx_phase = phase_to_180(Znx_phase);
 
 ZP((ff-f_start)/10+1,:) = [ff,abs(Zp), Zpx_phase];
 ZN((ff-f_start)/10+1,:)= [ff,abs(Zn), Znx_phase];
@@ -176,15 +178,15 @@ ZN((ff-f_start)/10+1,:)= [ff,abs(Zn), Znx_phase];
 end
 % save ZP;
 % save ZN;
-% figure
-% subplot(2,1,1);
-% plot(ZP(:,1),20*log(ZP(:,2)));
-% xlabel('频率（Hz)');
-% ylabel('幅值（dB)');
-% subplot(2,1,2);
-% plot(ZP(:,1),ZP(:,3));
-% xlabel('频率（Hz)');
-% ylabel('相角（度)');
+figure
+subplot(2,1,1);
+plot(ZP(:,1),20*log(ZP(:,2)));
+xlabel('频率（Hz)');
+ylabel('幅值（dB)');
+subplot(2,1,2);
+plot(ZP(:,1),ZP(:,3));
+xlabel('频率（Hz)');
+ylabel('相角（度)');
 % saveas(gca, 'ZukangScanBode.fig')
 % saveas(gca, 'ZukangScanBode.emf')
 % saveas(gca, 'ZukangScanBode.png')

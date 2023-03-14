@@ -14,11 +14,12 @@ t_span = signal_length / fs;
 
 fft_bilateral = fft(input_sig, signal_length, 1)/signal_length; % 1 means dim=1
 fft_unilateral = fft_bilateral(1:(signal_length / 2), :);
-fft_unilateral(2:end - 1, :) = fft_unilateral(2:end - 1, :)*2.0;
+fft_unilateral(2:end - 1, :) = fft_unilateral(2:end - 1, :)*2
 % spectrum_dual_mag = abs(fft_bilateral / signal_length);
 % spectrum_dual_angle = angle(fft_bilateral);
 
-spectrum_single_mag = abs(fft_unilateral); 
+spectrum_single_mag = abs(fft_unilateral);
+spectrum_single_mag(2:end - 1, :) = 2 .* spectrum_single_mag(2:end-1, :);  %  
 spectrum_single_angle = angle(fft_unilateral);
 
 freq_ax = 0 : (1/t_span) : fs/2;

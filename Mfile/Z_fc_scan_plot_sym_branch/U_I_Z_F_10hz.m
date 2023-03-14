@@ -1,34 +1,31 @@
-function [ZPD_SISO,ZND_SISO]=U_I_Z_F_1hz_1_250(Freq_begin,Freq_end,Freq_step,NN,Data)
+% close all
+% clear
+% clc
+% load('Hfile_6.mat')
+% scan_0 = Hscan_6;
+NN=50000;%%跟采样点数有关
+N=NN*1;
 
-Data = cell2mat(struct2cell(Data));
-Impedance_scan=Data;
+
+f_start=250;
+f_end=2490;
+
+ZP=zeros((f_end-f_start)/10+1,3);
+ZN=zeros((f_end-f_start)/10+1,3);
+
+for ff =f_start:10:f_end   
+    
 
 
-N=NN;
-f_start=Freq_begin;
-f_end=Freq_end-1;
-step = Freq_step;
+TT=scan_0(1,((ff-f_start)/10*(NN)+1):((ff-f_start)/10*(NN)+N) );
 
-ZP=zeros(f_end-f_start,3);
-ZN=zeros(f_end-f_start,3);
-ZA=zeros(f_end-f_start,3);
+UA=scan_0(3,((ff-f_start)/10*(NN)+1):((ff-f_start)/10*(NN)+N) );
+UB=scan_0(4,((ff-f_start)/10*(NN)+1):((ff-f_start)/10*(NN)+N) );
+UC=scan_0(5,((ff-f_start)/10*(NN)+1):((ff-f_start)/10*(NN)+N) );
 
-Vimg.p = [];
-Vimg.n = [];
-Iimg.p = [];
-Iimg.n = [];
-
-for ff =f_start:f_end   
-
-TT=Impedance_scan(1,((ff-f_start)*NN+1):((ff-f_start)*NN+N));
-
-UA=Impedance_scan(3,((ff-f_start)*NN+1):((ff-f_start)*NN+N));
-UB=Impedance_scan(4,((ff-f_start)*NN+1):((ff-f_start)*NN+N));
-UC=Impedance_scan(5,((ff-f_start)*NN+1):((ff-f_start)*NN+N));
-
-IA=Impedance_scan(6,((ff-f_start)*NN+1):((ff-f_start)*NN+N));
-IB=Impedance_scan(7,((ff-f_start)*NN+1):((ff-f_start)*NN+N));
-IC=Impedance_scan(8,((ff-f_start)*NN+1):((ff-f_start)*NN+N));
+IA=-scan_0(6,((ff-f_start)/10*(NN)+1):((ff-f_start)/10*(NN)+N) );
+IB=-scan_0(7,((ff-f_start)/10*(NN)+1):((ff-f_start)/10*(NN)+N) );
+IC=-scan_0(8,((ff-f_start)/10*(NN)+1):((ff-f_start)/10*(NN)+N) );
 
 % figure;
 % subplot(2,3,1)
@@ -45,18 +42,19 @@ IC=Impedance_scan(8,((ff-f_start)*NN+1):((ff-f_start)*NN+N));
 % plot(TT,IC);
 
 
-% Uas=zeros(1,N);
-% Uas_mag=zeros(1,1);
-% Uas_phase=zeros(1,1);
+
+Uas=zeros(1,(N ));
+Uas_mag=zeros(1,1);
+Uas_phase=zeros(1,1);
 
  
 % 变量定义
-% Uas=zeros(1,N );
-% Ubs=zeros(1,N );
-% Ucs=zeros(1,N );
-% Ias=zeros(1,N );
-% Ibs=zeros(1,N );
-% Ics=zeros(1,N );
+Uas=zeros(1,(N ));
+Ubs=zeros(1,(N ));
+Ucs=zeros(1,(N ));
+Ias=zeros(1,(N ));
+Ibs=zeros(1,(N ));
+Ics=zeros(1,(N ));
 Uas_mag=zeros(1,1);
 Uas_phase=zeros(1,1);
 Ias_mag=zeros(1,1);
@@ -89,13 +87,13 @@ Ics=IC;
 % Uas_phase = phaseUas(2*ff+1)
 
     Uas_fft=fft(Uas(1,:));
-    magUas = abs(Uas_fft/N);
-    magUas = magUas(1:N/2);
+    magUas = abs(Uas_fft/(N ));
+    magUas = magUas(1:(N )/2);
     magUas(2:end-1) = 2*magUas(2:end-1);
     phaseUas = angle(Uas_fft);
     Ias_fft=fft(Ias(1,:));
-    magIas = abs(Ias_fft/N);
-    magIas = magIas(1:N/2);
+    magIas = abs(Ias_fft/(N ));
+    magIas = magIas(1:(N )/2);
     magIas(2:end-1) = 2*magIas(2:end-1);
     phaseIas = angle(Ias_fft);    
  
@@ -147,15 +145,10 @@ In = (IACP (:,2).*exp(1i*IACP (:,3))+IACP (:,4).*exp(1i*(IACP(:,5)-2*pi/3))+IACP
 Vp = (VACP (:,2).*exp(1i*VACP (:,3))+VACP (:,4).*exp(1i*(VACP(:,5)+2*pi/3))+VACP (:,6).*exp(1i*(VACP(:,7)-2*pi/3)))/3;
 Vn = (VACP (:,2).*exp(1i*VACP (:,3))+VACP (:,4).*exp(1i*(VACP(:,5)-2*pi/3))+VACP (:,6).*exp(1i*(VACP(:,7)+2*pi/3)))/3;
 
-Vimg.p = [Vimg.p; Vp];
-Vimg.n = [Vimg.n; Vn];
-Iimg.p = [Iimg.p; Ip];
-Iimg.n = [Iimg.n; In];
+
 % 阻抗矩阵
 Zp = Vp./Ip;
 Zn = Vn./In;
-
-%Zp = abs(Uas_fft./Ias_fft);
 
 Ia = IACP (:,2).*exp(1i*IACP (:,3));
 Va = VACP (:,2).*exp(1i*VACP (:,3));
@@ -174,61 +167,45 @@ Za= Va./Ia;
 % 阻抗相角折算至±180°之间
 Zpx_phase=angle(Zp)*180/pi;
 Znx_phase=angle(Zn)*180/pi;
-Zax_phase=angle(Za)*180/pi;
-
-Zpx_phase = f_phase_round_180(Zpx_phase);
-Znx_phase = f_phase_round_180(Znx_phase);
-Zax_phase = f_phase_round_180(Zax_phase);
-% if ff<=50 & Zpx_phase<-110
-%     Zpx_phase = Zpx_phase + 360;
-% end
-% if (ff>50 & ff<100) & Zpx_phase>120
-%     Zpx_phase = Zpx_phase - 360;
-% end    
-
-%Zpx_phase=angle(Zp)*180/pi;
 
 
-ZP(ff-f_start+1,:) = [ff,abs(Zp), Zpx_phase];
-ZN (ff-f_start+1,:)= [ff,abs(Zn), Znx_phase];
-ZA (ff-f_start+1,:)= [ff,abs(Za), Zax_phase];
+ZP((ff-f_start)/10+1,:) = [ff,abs(Zp), Zpx_phase];
+ZN((ff-f_start)/10+1,:)= [ff,abs(Zn), Znx_phase];
+
+
 end
-
-
-ZPD=ZP;
-% save DATA_ZPD ZPD;
+% save ZP;
+% save ZN;
 % figure
 % subplot(2,1,1);
-% plot(ZP(:,1),20*log10(ZP(:,2)));
+% plot(ZP(:,1),20*log(ZP(:,2)));
 % xlabel('频率（Hz)');
 % ylabel('幅值（dB)');
 % subplot(2,1,2);
 % plot(ZP(:,1),ZP(:,3));
 % xlabel('频率（Hz)');
 % ylabel('相角（度)');
-% saveas(gca, 'ZP.png')
-ZND=ZN;
-% save DATA_ZND ZND;
+% saveas(gca, 'ZukangScanBode.fig')
+% saveas(gca, 'ZukangScanBode.emf')
+% saveas(gca, 'ZukangScanBode.png')
+
+% ZPD=ZP;
+% save DATA_ZPD ZPD;
+
+
 % figure
 % subplot(2,1,1);
-% plot(ZN(:,1),20*log10(ZN(:,2)));
+% plot(ZN(:,1),20*log(ZN(:,2)));
 % xlabel('频率（Hz)');
 % ylabel('幅值（dB)');
 % subplot(2,1,2);
 % plot(ZN(:,1),ZN(:,3));
 % xlabel('频率（Hz)');
 % ylabel('相角（度)');
-% saveas(gca, 'ZN.png')
+% saveas(gca, 'ZukangScanBode.fig')
+% saveas(gca, 'ZukangScanBode.emf')
+% saveas(gca, 'ZukangScanBode.png')
 
- ZND_SISO = ZND;
- ZPD_SISO = ZPD;
- 
- save('VIimg', 'Vimg', 'Iimg')
-%     save(strcat(OutRoot, 'DATA_ZPD', '.mat'),'ZPD');
-%     save(strcat(OutRoot, 'DATA_ZND', '.mat'),'ZND');
-
-  
-% close all
-
-
+% ZND=ZN;
+% save DATA_ZND ZND;
 

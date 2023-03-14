@@ -3,8 +3,8 @@
 % __MatFilePrefix__ and __VarNamePrefix__, these two var act as
 % regular expression
 clear;clc
-RootDirNew = "D:\»ªÈñÎ¬ÚÐ-ScanData\LHVRT_20220627-v3\";
-RootDirOld = "C:\Users\ym\Desktop\adpss\";
+RootDirNew = "D:\Envision3p3\Envision_JJL_3p3_data\11-lvrt-20220826\";
+RootDirOld = "D:\Envision3p3\Envision_JJL_3p3_data\03-csv_old\ADPSSCsv4Adpss0.0001\";
 
 t_range = 15;
 T_LHVRT_Iq_Test = 2.45;
@@ -14,15 +14,16 @@ setFontSize = 10;
 % Idle case processing
 Field1 = {'VRT'};
 Field2 = {'3ph', '2ph'};
-Field3 = {'u20', 'u130'};
-Field4 = {'p1.0', 'p0.2'};
+Field3 = {'u75'};
+Field4 = {'p0.2', 'p1.0'};
 
 
 
 SubFolderCell2 = f_sequence_gen_recursive({Field1, Field2, Field3, Field4}, '_');
 SubFolderCell = SubFolderCell2{1};
 
-SubFolderCell = {'VRT_3ph_u20_p1.0'};
+% SubFolderCell = {'VRT_3ph_u130_p1.0'};
+% SubFolderCell = [SubFolderCell, 'VRT_2ph_u130_p1.0','VRT_3ph_u130_p1.0']
 
 ExportFig = true;
 ExportEmf = true;
@@ -54,10 +55,10 @@ for each_folder=1:length(SubFolderCell)
     Pold = tmp_csv(:, 3);
     Pnew = load(strcat(sub_folder_dir_new, 'data_P'));
 
-    Qold = tmp_csv(:, 4);
+    Qold = tmp_csv(:, 5);
     Qnew = load(strcat(sub_folder_dir_new, 'data_Q'));
 
-    Ipold = tmp_csv(:, 5);
+    Ipold = tmp_csv(:, 4);
     Ipnew = load(strcat(sub_folder_dir_new, 'data_Ip'));
 
     Iqold = tmp_csv(:, 6);
@@ -238,7 +239,7 @@ for each_folder=1:length(SubFolderCell)
 
 	
 
-	% break  % debug only
+% 	break  % debug only
 	
 end
 disp('Complete.')

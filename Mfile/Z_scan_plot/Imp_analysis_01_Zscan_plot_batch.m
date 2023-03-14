@@ -2,24 +2,35 @@
 % modified by Yamin, 2021/11/12
 % description: process Low and High freq and combine them in one .m file
 clear;clc
-RootDir = "C:\Users\anony\Desktop\ZscanData\";
+RootDir = "C:\Users\ym\Desktop\";
 % RootDir = "F:\SG1250_Data\Zscan\1-250Hz\";
 % Mat file name prefix, program will search related files in each folder
 MatFilePrefixCell = {"Lfile", "Hfile"};
+% MatFilePrefixCell = {"Lfile"};
+% MatFilePrefixCell = {"Hfile"};
 
 % Variable name prefix, after loading a .mat file, program will search related variable name
-VarNamePrefixCell = {"Lscan", "Hscan"};
+% VarNamePrefixCell = {"Lscan", "Hscan"};
+VarNamePrefixCell = {"scan_concat"};
+% VarNamePrefixCell = {"Hscan"};
+
 % Idle case processing
 
 
 
 PsetCell = {'P1.0'};
 QsetCell = {'Q0.0'};
-FreqCell = {'Low', 'High'};  % Low or High
 
+% FreqCell = {'Low', 'High'};  % Low or High
+FreqCell = {'Low'};  % Low or High
+% FreqCell = { 'High'};  % Low or High
+
+SubFolderCell = {};
 
 SubFolderCell = f_sequence_gen_recursive({PsetCell, QsetCell}, '-');
 SubFolderCell = SubFolderCell{1};
+
+SubFolderCell = {'THU_imp'};
 
 setFontSize = 10;
 ExportFig = true;
@@ -96,33 +107,21 @@ for each_folder=1:length(SubFolderCell)
 				    plot(ZP(:,1), 20*log10(ZP(:,2)), '.-', 'MarkerIndices', 1:2:length(ZP), 'color', 'k', ...
 					    'linewidth', 1.0, 'color', 'k');
 				    xlabel('Frequency (Hz)');
-				    ylabel('Amplitude (dB)');
+				    ylabel('Magnitude (dB)');
 				    title(append(SubFolderCell{each_folder}, ' - ', 'Positive Sequence'))
 				    grid on
 				    set(gca, 'fontname', 'Times new roman')
+                    set(gca, 'xlim', [0, 250])
 				    subplot(2,1,2);
+                    f_plot_risk_area_mmc_hvdc(gca)
 				    plot(ZP(:,1),ZP(:,3), '.-', 'MarkerIndices', 1:2:length(ZP), 'color', 'k', ...
 					    'linewidth', 1.0, 'color', 'k');
 				    xlabel('Frequency (Hz)');
 				    ylabel('Phase (Deg)');
 				    grid on
 				    set(gca, 'fontname', 'Times new roman')
-
-				    if ExportFig == true
-	                    saveas(gcf, append(this_file_path, '.fig'))
-	                end 
-	                if ExportEmf == true
-	                    saveas(gcf, append(this_file_path, '.emf'))
-	                end 
-	                if ExportEps == true
-	                    saveas(gcf, append(this_file_path, '.eps'), 'epsc')
-	                end 
-	                if ExportPng == true
-	                    print(append(this_file_path, '.png'), '-dpng', append('-r', ExportResolution))
-	                end 
-	                if ExportTiff == true
-	                    print(append(this_file_path, '.tif'), '-dtiff', append('-r', ExportResolution))
-	                end
+                    set(gca, 'xlim', [0, 250])
+                    f_savefig(sub_freq_dir, 'ZP_BodePlot', {'fig', 'png'}, 300)
                     
 
                     this_file_path = append(sub_freq_dir, '\ZN_BodePlot_', SubFolderCell{each_folder});
@@ -132,7 +131,7 @@ for each_folder=1:length(SubFolderCell)
 				    plot(ZN(:,1), 20*log10(ZN(:,2)), '.-', 'MarkerIndices', 1:2:length(ZN), 'color', 'k', ...
 					    'linewidth', 1.0, 'color', 'k');
 				    xlabel('Frequency (Hz)');
-				    ylabel('Amplitude (dB)');
+				    ylabel('Magnitude (dB)');
 				    title(append(SubFolderCell{each_folder}, ' - ', 'Negative Sequence'))
 				    grid on
 				    set(gca, 'fontname', 'Times new roman')
@@ -143,22 +142,7 @@ for each_folder=1:length(SubFolderCell)
 				    ylabel('Phase (Deg)');
 				    grid on
 				    set(gca, 'fontname', 'Times new roman')
-
-				    if ExportFig == true
-	                    saveas(gcf, append(this_file_path, '.fig'))
-	                end 
-	                if ExportEmf == true
-	                    saveas(gcf, append(this_file_path, '.emf'))
-	                end 
-	                if ExportEps == true
-	                    saveas(gcf, append(this_file_path, '.eps'), 'epsc')
-	                end 
-	                if ExportPng == true
-	                    print(append(this_file_path, '.png'), '-dpng', append('-r', ExportResolution))
-	                end 
-	                if ExportTiff == true
-	                    print(append(this_file_path, '.tif'), '-dtiff', append('-r', ExportResolution))
-	                end
+                    f_savefig(sub_freq_dir, 'ZN_BodePlot', {'fig', 'png'}, 300)
                 
 
                 close all
@@ -202,49 +186,104 @@ for each_folder=1:length(SubFolderCell)
     save(append(sub_freq_dir, '\', 'DATA_ZND.mat'), 'ZND')
     save(append(sub_freq_dir, '\', 'DATA_ZND_', SubFolderCell{each_folder}, '_', Freq, '.mat'), 'ZND')
 
-    this_file_path = append(sub_freq_dir, '\ZP_BodePlot_', SubFolderCell{each_folder});
+%     this_file_path = append(sub_freq_dir, '\ZP_BodePlot_', SubFolderCell{each_folder});
+%     figure
+%     set(gcf,'unit','centimeters','position',[10,5,18,8+3])
+%     subplot(2,1,1);
+%     semilogx(ZPD_all(:,1), 20*log10(ZPD_all(:,2)), '.-', 'MarkerIndices', 1:2:length(ZPD_all), 'color', 'k', ...
+% 	    'linewidth', 1.0, 'color', 'k');
+%     xlabel('Frequency (Hz)');
+%     ylabel('Magnitude (dB)');
+%     title(append(SubFolderCell{each_folder}, ' - ', 'Positive Sequence'))
+%     grid on
+%     set(gca, 'fontname', 'Times new roman')
+%     subplot(2,1,2);
+%     semilogx(ZPD_all(:,1),ZPD_all(:,3), '.-', 'MarkerIndices', 1:2:length(ZPD_all), 'color', 'k', ...
+% 	    'linewidth', 1.0, 'color', 'k');
+%     xlabel('Frequency (Hz)');
+%     ylabel('Phase (Deg)');
+%     grid on
+%     set(gca, 'fontname', 'Times new roman')
+% 
+%     if ExportFig == true
+%         saveas(gcf, append(this_file_path, '.fig'))
+%     end 
+%     if ExportEmf == true
+%         saveas(gcf, append(this_file_path, '.emf'))
+%     end 
+%     if ExportEps == true
+%         saveas(gcf, append(this_file_path, '.eps'), 'epsc')
+%     end 
+%     if ExportPng == true
+%         print(append(this_file_path, '.png'), '-dpng', append('-r', ExportResolution))
+%     end 
+%     if ExportTiff == true
+%         print(append(this_file_path, '.tif'), '-dtiff', append('-r', ExportResolution))
+%     end
+
+% 	this_file_path = append(sub_freq_dir, '\ZN_BodePlot_', SubFolderCell{each_folder});
+%     figure
+%     set(gcf,'unit','centimeters','position',[10,5,18,8+3])
+%     subplot(2,1,1);
+%     semilogx(ZND_all(:,1), 20*log10(ZND_all(:,2)), '.-', 'MarkerIndices', 1:2:length(ZND_all), 'color', 'k', ...
+% 	    'linewidth', 1.0, 'color', 'k');
+%     xlabel('Frequency (Hz)');
+%     ylabel('Magnitude (dB)');
+%     title(append(SubFolderCell{each_folder}, ' - ', 'Negative Sequence'))
+%     grid on
+%     set(gca, 'fontname', 'Times new roman')
+%     subplot(2,1,2);
+%     semilogx(ZND_all(:,1),ZND_all(:,3), '.-', 'MarkerIndices', 1:2:length(ZND_all), 'color', 'k', ...
+% 	    'linewidth', 1.0, 'color', 'k');
+%     xlabel('Frequency (Hz)');
+%     ylabel('Phase (Deg)');
+%     grid on
+%     set(gca, 'fontname', 'Times new roman')
+% 
+%     if ExportFig == true
+%         saveas(gcf, append(this_file_path, '.fig'))
+%     end 
+%     if ExportEmf == true
+%         saveas(gcf, append(this_file_path, '.emf'))
+%     end 
+%     if ExportEps == true
+%         saveas(gcf, append(this_file_path, '.eps'), 'epsc')
+%     end 
+%     if ExportPng == true
+%         print(append(this_file_path, '.png'), '-dpng', append('-r', ExportResolution))
+%     end 
+%     if ExportTiff == true
+%         print(append(this_file_path, '.tif'), '-dtiff', append('-r', ExportResolution))
+%     end
+
+    
+    
     figure
     set(gcf,'unit','centimeters','position',[10,5,18,8+3])
     subplot(2,1,1);
-    semilogx(ZPD_all(:,1), 20*log10(ZPD_all(:,2)), '.-', 'MarkerIndices', 1:2:length(ZPD_all), 'color', 'k', ...
+    plot(ZPD_all(:,1), 20*log10(ZPD_all(:,2)), 'color', 'k', ...
 	    'linewidth', 1.0, 'color', 'k');
     xlabel('Frequency (Hz)');
-    ylabel('Amplitude (dB)');
+    ylabel('Magnitude (dB)');
     title(append(SubFolderCell{each_folder}, ' - ', 'Positive Sequence'))
     grid on
     set(gca, 'fontname', 'Times new roman')
     subplot(2,1,2);
-    semilogx(ZPD_all(:,1),ZPD_all(:,3), '.-', 'MarkerIndices', 1:2:length(ZPD_all), 'color', 'k', ...
+    plot(ZPD_all(:,1),ZPD_all(:,3), 'color', 'k', ...
 	    'linewidth', 1.0, 'color', 'k');
     xlabel('Frequency (Hz)');
     ylabel('Phase (Deg)');
     grid on
     set(gca, 'fontname', 'Times new roman')
+    f_savefig(sub_freq_dir, 'ZP_BodePlot_Linear', {'fig', 'png'}, 300)
 
-    if ExportFig == true
-        saveas(gcf, append(this_file_path, '.fig'))
-    end 
-    if ExportEmf == true
-        saveas(gcf, append(this_file_path, '.emf'))
-    end 
-    if ExportEps == true
-        saveas(gcf, append(this_file_path, '.eps'), 'epsc')
-    end 
-    if ExportPng == true
-        print(append(this_file_path, '.png'), '-dpng', append('-r', ExportResolution))
-    end 
-    if ExportTiff == true
-        print(append(this_file_path, '.tif'), '-dtiff', append('-r', ExportResolution))
-    end
-
-	this_file_path = append(sub_freq_dir, '\ZN_BodePlot_', SubFolderCell{each_folder});
     figure
     set(gcf,'unit','centimeters','position',[10,5,18,8+3])
     subplot(2,1,1);
     semilogx(ZND_all(:,1), 20*log10(ZND_all(:,2)), '.-', 'MarkerIndices', 1:2:length(ZND_all), 'color', 'k', ...
 	    'linewidth', 1.0, 'color', 'k');
     xlabel('Frequency (Hz)');
-    ylabel('Amplitude (dB)');
+    ylabel('Magnitude (dB)');
     title(append(SubFolderCell{each_folder}, ' - ', 'Negative Sequence'))
     grid on
     set(gca, 'fontname', 'Times new roman')
@@ -255,22 +294,7 @@ for each_folder=1:length(SubFolderCell)
     ylabel('Phase (Deg)');
     grid on
     set(gca, 'fontname', 'Times new roman')
-
-    if ExportFig == true
-        saveas(gcf, append(this_file_path, '.fig'))
-    end 
-    if ExportEmf == true
-        saveas(gcf, append(this_file_path, '.emf'))
-    end 
-    if ExportEps == true
-        saveas(gcf, append(this_file_path, '.eps'), 'epsc')
-    end 
-    if ExportPng == true
-        print(append(this_file_path, '.png'), '-dpng', append('-r', ExportResolution))
-    end 
-    if ExportTiff == true
-        print(append(this_file_path, '.tif'), '-dtiff', append('-r', ExportResolution))
-    end
+    f_savefig(sub_freq_dir, 'ZN_BodePlot_Linear', {'fig', 'png'}, 300)
 
     close all
 end				

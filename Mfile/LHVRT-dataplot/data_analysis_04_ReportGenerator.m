@@ -1,16 +1,16 @@
 %% User could change here
-SrcDir = 'D:\»ªÈñÎ¬ÚÐ-ScanData\LHVRT_20220627-v3\';  % Your .mat file location
+SrcDir = 'D:\Envision3p3\Envision_JJL_3p3_data\11-lvrt-20220826\';  % Your .mat file location
 DstDir = SrcDir;  % where your doc will be generated
 
 TimeStampStr = cellstr(datetime('now', 'Format', 'yyyy-MM-dd HH-mm-ss-SSS'));
 TimeStampStr = TimeStampStr{1};
 WordFileName = strcat('LHVRT-comparison-', TimeStampStr, '.docx');  % your doc name
 WordFileUrl = strcat(DstDir, WordFileName); 
-WordTitle = '»ªÈñÎ¬ÚÐ2.5MW';   % title of your report
+WordTitle = 'Ô¶¾°3.3MW';   % title of your report
 
 Field1 = {'VRT'};
 Field2 = {'3ph', '2ph'};
-Field3 = {'u20', 'u130'};
+Field3 = {'u20', 'u75', 'u120', 'u130'};
 Field4 = {'p1.0', 'p0.2'};
 SubFolderCell1 = f_sequence_gen_recursive({Field1, Field2, Field3, Field4}, '_');
 SubFolderCell = SubFolderCell1{1};
@@ -27,7 +27,7 @@ for file_idx=1:length(SubFolderCell)
 	disp(strcat('[', num2str(file_idx), '/', num2str(length(SubFolderCell)) , '] - ', ...
         'Working on: ', SubFolderCell{file_idx}))
     
-    fig_url = strcat(sub_folder_dir, '\', 'Unified_Plot-Cmp.emf');
+    fig_url = strcat(sub_folder_dir, '\', 'Unified_Plot-Cmp.png');
     fun_word_figure(fig_url, 'Unified_Plot', WordFileUrl)
     
 %     fig_url = strcat(sub_folder_dir, '\', 'U+.emf');

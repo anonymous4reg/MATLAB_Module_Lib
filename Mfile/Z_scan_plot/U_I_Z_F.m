@@ -1,6 +1,6 @@
 % close all
 
-NN=50000;%%跟采样点数有关
+NN=20000;%%跟采样点数有关
 N=NN*1;
 
 f_start=1;
@@ -18,9 +18,9 @@ UA=scan_0(3,((ff-f_start)*NN+1):((ff-f_start)*NN+N));
 UB=scan_0(4,((ff-f_start)*NN+1):((ff-f_start)*NN+N));
 UC=scan_0(5,((ff-f_start)*NN+1):((ff-f_start)*NN+N));
 
-IA=-scan_0(6,((ff-f_start)*NN+1):((ff-f_start)*NN+N));
-IB=-scan_0(7,((ff-f_start)*NN+1):((ff-f_start)*NN+N));
-IC=-scan_0(8,((ff-f_start)*NN+1):((ff-f_start)*NN+N));
+IA=scan_0(6,((ff-f_start)*NN+1):((ff-f_start)*NN+N));
+IB=scan_0(7,((ff-f_start)*NN+1):((ff-f_start)*NN+N));
+IC=scan_0(8,((ff-f_start)*NN+1):((ff-f_start)*NN+N));
 
 % figure;
 % subplot(2,3,1)
@@ -165,12 +165,16 @@ Zpx_phase=angle(Zp)*180/pi;
 Znx_phase=angle(Zn)*180/pi;
 Zax_phase=angle(Za)*180/pi;
 
-if Zpx_phase<-180
-    Zpx_phase = Zpx_phase + 360;
-end
-if Zpx_phase>180
-    Zpx_phase = Zpx_phase - 360;
-end    
+Zpx_phase = phase_to_180(Zpx_phase);
+Znx_phase = phase_to_180(Znx_phase);
+Zax_phase = phase_to_180(Zax_phase);
+
+% if Zpx_phase<-180
+%     Zpx_phase = Zpx_phase + 360;
+% end
+% if Zpx_phase>180
+%     Zpx_phase = Zpx_phase - 360;
+% end    
 
 %Zpx_phase=angle(Zp)*180/pi;
 

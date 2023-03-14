@@ -33,20 +33,20 @@ function [outputArg1] = f_savefig(arg_save_dir, arg_file_name, arg_format_cell, 
 		elseif strcmp(this_format, 'jpg') == true
 			ExportJpg = true;
 		elseif strcmp(this_format, 'tif') == true
-			ExportTiff = true;
+			ExportTif = true;
 		else
-			fprintf("Unsupported format: %s, this will be ignored\n", this_format)
+			fprintf('Unsupported format: %s, this will be ignored\n', this_format)
 		end
 	end
 
 	fprintf('In folder: %s\n', arg_save_dir)
 	if ExportFig == true
 		fprintf('Saving %s ...\n', strcat(arg_file_name, '.fig'))
-	    saveas(gcf, append(file_url, '.fig'))
+	    saveas(gcf, strcat(file_url, '.fig'))
 	end 
 	if ExportEmf == true
 		fprintf('Saving %s ...\n', strcat(arg_file_name, '.emf'))
-	    saveas(gcf, append(file_url, '.emf'))
+	    saveas(gcf, strcat(file_url, '.emf'))
 	end 
 	if ExportEps == true
 		fprintf('Saving %s ...\n', strcat(arg_file_name, '.eps'))
@@ -54,15 +54,15 @@ function [outputArg1] = f_savefig(arg_save_dir, arg_file_name, arg_format_cell, 
 	end 
 	if ExportPng == true
 		fprintf('Saving %s ...\n', strcat(arg_file_name, '.png'))
-	    print(file_url, '-dpng', append('-r', ExportResolution))
+	    print(file_url, '-dpng', strcat('-r', ExportResolution))
 	end 
 	if ExportJpg == true
 		fprintf('Saving %s ...\n', strcat(arg_file_name, '.jpg'))
-	    print(file_url, '-djpeg', append('-r', ExportResolution))
+	    print(file_url, '-djpeg', strcat('-r', ExportResolution))
 	end 
 	if ExportTif == true
 		fprintf('Saving %s ...\n', strcat(arg_file_name, '.tif'))
-	    print(file_url, '-dtiff', append('-r', ExportResolution))
+	    print(file_url, '-dtiff', strcat('-r', ExportResolution))
 	end 
 
 end

@@ -2,7 +2,7 @@
 % modified by Yamin, 2021/11/12
 % description: process Low and High freq and combine them in one .m file
 clear;clc
-RootDir = 'D:\PJ\Python\FFT_Py\';
+RootDir = 'E:\YuDaiWan\02-data\02-Scan_data\ZC\';
 % RootDir = "F:\SG1250_Data\Zscan\1-250Hz\";
 % Mat file name prefix, program will search related files in each folder
 MatFilePrefixCell = {"Lfile", "Hfile"};
@@ -20,7 +20,7 @@ FreqCell = {'Low', 'High'};  % Low or High
 
 SubFolderCell = f_sequence_gen_recursive({PsetCell, QsetCell}, '-');
 SubFolderCell = SubFolderCell{1};
-SubFolderCell = {'data'}
+SubFolderCell = {'U0.95'}
 
 setFontSize = 10;
 ExportFig = true;
@@ -72,7 +72,7 @@ for each_folder=1:length(SubFolderCell)
                     Freq_middle =   100;
                     Freq_end    =   350;
                     Freq_step   =   1;
-                    SampleTimeMicroSecond  =   50; % Sample time of data(us)
+                    SampleTimeMicroSecond  =   100; % Sample time of data(us)
                     SaveTempsFlag = true;
                     
                     %% DON NOT Change this block !!!
@@ -141,6 +141,11 @@ for each_folder=1:length(SubFolderCell)
 			    xlabel('Frequency (Hz)');
 			    ylabel('Phase (Deg)');
 			    grid on
+                if strcmp(Freq, 'Low') == 1
+                    set(gca, 'xlim', [0, 350])
+                elseif strcmp(Freq, 'High') == 1
+                    set(gca, 'xlim', [350, 2500])
+                end
 			    set(gca, 'fontname', 'Times new roman')
                 
                 
