@@ -188,12 +188,16 @@ for ff =f_start:f_step:(f_end)
 	ZA (ff_num+1,:)= [ff,abs(Za), Zax_phase];
 end
 
+    ZPD = ZP;
+    ZND = ZN;
+
     ZPD_SISO = ZP;
     ZND_SISO = ZN;
 
+
     if SaveTempsFlag == true
-            save(strcat(OutRoot, 'DATA_ZPD_SISO.mat'), 'ZPD_SISO');
-            save(strcat(OutRoot, 'DATA_ZND_SISO.mat'), 'ZND_SISO');
+            save(strcat(OutRoot, 'DATA_ZPD.mat'), 'ZPD');
+            save(strcat(OutRoot, 'DATA_ZND.mat'), 'ZND');
     end
 
 end

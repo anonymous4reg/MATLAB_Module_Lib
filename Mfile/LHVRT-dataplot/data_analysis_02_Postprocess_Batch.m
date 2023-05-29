@@ -1,30 +1,35 @@
+% 2023/5/29 - version 3: start to use function __f_savefig__ instead of the old fashion fig saving mechanism
 % 2020/9/23 - version 2: In this version Rename process is removed, program
 % will recognize mat-file and variable automatically according to 
 % __MatFilePrefix__ and __VarNamePrefix__, these two var act as
 % regular expression
 clear;clc
-RootDir = "D:\Envision3p3\Envision_JJL_3p3_data\11-lvrt-20220826\";
+RootDir = "E:\TaoShanHu\02-data\5.24\vrt\";
+
 t_range = 15;
 T_LHVRT_Iq_Test = 2.45;
 setFontSize = 10;
 % Mat file name prefix, program will search related files in each folder
-MatFilePrefix = "myfile";
+MatFilePrefix = 'myfile';
 % Variable name prefix, after loading a .mat file, program will search related variable name
-VarNamePrefix = "opvar";
+VarNamePrefix = 'opvar';
 
 % Idle case processing
 Field1 = {'VRT'};
 Field2 = {'3ph', '2ph'};
-Field3 = {'u75'};
+Field3 = {'u20', 'u35', 'u50', 'u75', 'u120', 'u125', 'u130'};
+% Field3 = {'u20', 'u35', 'u50', 'u75'};
+% Field3 = {'u120', 'u125', 'u130'};
 Field4 = {'p1.0', 'p0.2'};
 % Field4 = {'idle'};  
 
 
 SubFolderCell2 = f_sequence_gen_recursive({Field1, Field2, Field3, Field4}, '_');
 SubFolderCell = SubFolderCell2{1};
-% SubFolderCell = {'VRT_2ph_u130_p0.2'};
 
+% SubFolderCell =  {'VRT_2ph_u120_p1.0'};  // Umcomment this line to overide the batch command
 
+ExportFigureFormat = {'fig', 'png'};
 ExportFig = true;
 ExportEmf = true;
 ExportPng = true;
@@ -38,7 +43,7 @@ tic
 for each_folder=1:length(SubFolderCell)
 	disp(strcat('[', num2str(each_folder), '/', num2str(length(SubFolderCell)) , ']-', ...
 		'Working on :', SubFolderCell{each_folder}))
-	sub_folder_dir = strcat(RootDir, SubFolderCell{each_folder}, "\");
+	sub_folder_dir = strcat(RootDir, SubFolderCell{each_folder}, '\');
 	% sub_folder_file_list = dir(strcat(sub_folder_dir, '\myfile*') );
 	sub_folder_files = dir(sub_folder_dir);
 	sub_folder_files = {sub_folder_files([sub_folder_files.isdir] == 0).name};
@@ -50,7 +55,7 @@ for each_folder=1:length(SubFolderCell)
 	if length(sub_folder_files) == 1
 	% If only ONE suitable .mat file founded, then do it.
 		
-		disp(strcat("Loading ", sub_folder_files, " ..."))
+		disp(strcat('Loading ', 'sub_folder_files', ' ...'))
 		load(strcat(sub_folder_dir, sub_folder_files{1}))
 		this_file_dir = sub_folder_dir;
 		var_name_found = who;
@@ -72,8 +77,8 @@ for each_folder=1:length(SubFolderCell)
             t=t-t(1);
             t=t';
 
-%             Vabc_690V =                                 data_1(2:4,:)';
-%             Iabc_690V =                                 data_1(5:7,:)';
+            Vabc_690V =                                 data_1(7:9,:)';
+            Iabc_690V =                                 data_1(10:12,:)';
 
             V_pu_690V =                                 data_1(2,:)';
             P_pu_690V =                                 data_1(3,:)';
@@ -97,7 +102,7 @@ for each_folder=1:length(SubFolderCell)
 %             Iabc_crowbar =                              data_1(41:43, :)';
 %             I_chopper =                                 data_1(44, :)';
 % 
-%             Vdc =                                       data_1(45, :)';
+%             Vdc =                                       data_1(19, :)';
 % 
 %             DI_bit1_main_connector =                    data_1(46, :)';
 %             DI_bit2_soft_connector =                    data_1(47, :)';
@@ -113,7 +118,7 @@ for each_folder=1:length(SubFolderCell)
 %             DO_feedback_bit6_stator_connector_MCC =     data_1(57, :)';
 %             PWM_grid_AUAD_BUBD_CUCD =                   data_1(58:63, :)';
 %             PWM_rotor_AUAD_BUBD_CUCD =                  data_1(64:69, :)';
-%             Crowbar_drive =                             data_1(70, :)';
+%             Crowbar_drive =                             data_1(21, :)';
 %             Chopper_drive =                             data_1(71, :)';
 %             FPGA_Iabc_stator =                          data_1(72:74, :)';
 %             FPGA_Iabc_rotor =                           data_1(75:77, :)';
@@ -150,236 +155,155 @@ for each_folder=1:length(SubFolderCell)
             val_LHVRT_Iq_Test_lim_vec = val_LHVRT_Iq_Test_lim * ones(length(t), 1);
 
 
-            %% plot zone
-            this_file_path = append(this_file_dir, '\', 'Iq+');
-            figure
-            plot(t, Iq_pu_690V,'r','LineWidth', 1.2)
-            grid on;
-            legend('Iq+');
-            xlabel('t/s');
-            ylabel('Iq/In');
-            title(['\fontname{Times new roman}Iq+ (690V)'])
-            set(gca, 'xlim', [0, t_range], 'fontname', 'times new roman', 'fontsize', setFontSize)
-            set(gcf,'unit','centimeters','position', [10,5,18,8])
-            if ExportFig == true
-                saveas(gcf, append(this_file_path, '.fig'))
-            end 
-            if ExportEmf == true
-                saveas(gcf, append(this_file_path, '.emf'))
-            end 
-            if ExportEps == true
-                saveas(gcf, this_file_path, 'epsc')
-            end 
-            if ExportPng == true
-                print(this_file_path, '-dpng', append('-r', ExportResolution))
-            end 
-            if ExportTiff == true
-                print(this_file_path, '-dtiff', append('-r', ExportResolution))
-            end 
-
-            this_file_path = append(this_file_dir, '\', 'Q+');
-            figure
-            plot(t, Q_pu_690V,'r','LineWidth', 1.2)
-            grid on;
-            legend('Q+');
-            xlabel('t/s');
-            ylabel('Q/Pn');
-            title(['\fontname{Times new roman}Q+ (690V)'])
-            set(gca, 'xlim', [0, t_range], 'fontname', 'times new roman', 'fontsize', setFontSize)
-            set(gcf,'unit','centimeters','position', [10,5,18,8])
-            if ExportFig == true
-                saveas(gcf, append(this_file_path, '.fig'))
-            end 
-            if ExportEmf == true
-                saveas(gcf, append(this_file_path, '.emf'))
-            end 
-            if ExportEps == true
-                saveas(gcf, this_file_path, 'epsc')
-            end 
-            if ExportPng == true
-                print(this_file_path, '-dpng', append('-r', ExportResolution))
-            end 
-            if ExportTiff == true
-                print(this_file_path, '-dtiff', append('-r', ExportResolution))
-            end 
+%% plot zone
+            %% plot seperately
+            % figure
+            % plot(t, Iq_pu_690V,'r','LineWidth', 1.2)
+            % grid on;
+            % legend('Iq+');
+            % xlabel('t/s');
+            % ylabel('Iq/In');
+            % title(['\fontname{Times new roman}Iq+ (690V)'])
+            % set(gca, 'xlim', [0, t_range], 'fontname', 'times new roman', 'fontsize', setFontSize)
+            % set(gcf,'unit','centimeters','position', [10,5,18,8])
+            % f_savefig(this_file_dir, 'Iq+', ExportFigureFormat, ExportResolution);
 
 
-            this_file_path = append(this_file_dir, '\', 'Ip+');
-            figure
-            plot(t, Ip_pu_690V,'r','LineWidth', 1.2)
-            grid on;
-            legend('Ip+');
-            xlabel('t/s');
-            ylabel('Ip/In');
-            title(['\fontname{Times new roman}Ip+ (690V)'])
-            set(gca, 'xlim', [0, t_range], 'fontname', 'times new roman', 'fontsize', setFontSize)
-            set(gcf,'unit','centimeters','position', [10,5,18,8])
-            if ExportFig == true
-                saveas(gcf, append(this_file_path, '.fig'))
-            end 
-            if ExportEmf == true
-                saveas(gcf, append(this_file_path, '.emf'))
-            end 
-            if ExportEps == true
-                saveas(gcf, this_file_path, 'epsc')
-            end 
-            if ExportPng == true
-                print(this_file_path, '-dpng', append('-r', ExportResolution))
-            end 
-            if ExportTiff == true
-                print(this_file_path, '-dtiff', append('-r', ExportResolution))
-            end 
-            % saveas( gca, strcat(sub_folder_dir, '\', 'Iq35+.fig') )
-            % saveas( gca, strcat(sub_folder_dir, '\', 'Iq35+.emf') )
-            % saveas( gca, strcat(sub_folder_dir, '\', 'Iq35+.png') )
+            % figure
+            % plot(t, Q_pu_690V,'r','LineWidth', 1.2)
+            % grid on;
+            % legend('Q+');
+            % xlabel('t/s');
+            % ylabel('Q/Pn');
+            % title(['\fontname{Times new roman}Q+ (690V)'])
+            % set(gca, 'xlim', [0, t_range], 'fontname', 'times new roman', 'fontsize', setFontSize)
+            % set(gcf,'unit','centimeters','position', [10,5,18,8])
+            % f_savefig(this_file_dir, 'Q+', ExportFigureFormat, ExportResolution);
 
 
-
-            this_file_path = append(this_file_dir, '\', 'P+');
-            figure
-            plot(t, P_pu_690V,'r','LineWidth', 1.2)
-            grid on;
-            legend('P+');
-            xlabel('t/s');
-            ylabel('P/Pn');
-            title(['\fontname{Times new roman}P+ (690V)'])
-            set(gca, 'xlim', [0, t_range], 'fontname', 'times new roman', 'fontsize', setFontSize)
-            set(gcf,'unit','centimeters','position', [10,5,18,8])
-            if ExportFig == true
-                saveas(gcf, append(this_file_path, '.fig'))
-            end 
-            if ExportEmf == true
-                saveas(gcf, append(this_file_path, '.emf'))
-            end 
-            if ExportEps == true
-                saveas(gcf, this_file_path, 'epsc')
-            end 
-            if ExportPng == true
-                print(this_file_path, '-dpng', append('-r', ExportResolution))
-            end 
-            if ExportTiff == true
-                print(this_file_path, '-dtiff', append('-r', ExportResolution))
-            end 
-            % saveas( gca, strcat(sub_folder_dir, '\', 'Q35+.fig') )
-            % saveas( gca, strcat(sub_folder_dir, '\', 'Q35+.emf') )
-            % saveas( gca, strcat(sub_folder_dir, '\', 'Q35+.png') )
+            % figure
+            % plot(t, Ip_pu_690V,'r','LineWidth', 1.2)
+            % grid on;
+            % legend('Ip+');
+            % xlabel('t/s');
+            % ylabel('Ip/In');
+            % title(['\fontname{Times new roman}Ip+ (690V)'])
+            % set(gca, 'xlim', [0, t_range], 'fontname', 'times new roman', 'fontsize', setFontSize)
+            % set(gcf,'unit','centimeters','position', [10,5,18,8])
+            % f_savefig(this_file_dir, 'Ip+', ExportFigureFormat, ExportResolution);
 
 
-            this_file_path = append(this_file_dir, '\', 'U+');
-            figure
-            plot(t,V_pu_690V,'r','LineWidth', 1.2)
-            grid on;
-            legend('U+');
-            xlabel('t/s');
-            ylabel('U/Un');
-            title(['\fontname{Times new roman}U+ (690V)'])
-            set(gca, 'xlim', [0, t_range], 'fontname', 'times new roman', 'fontsize', setFontSize)
-            set(gcf,'unit','centimeters','position', [10,5,18,8])
-            if ExportFig == true
-                saveas(gcf, append(this_file_path, '.fig'))
-            end 
-            if ExportEmf == true
-                saveas(gcf, append(this_file_path, '.emf'))
-            end 
-            if ExportEps == true
-                saveas(gcf, this_file_path, 'epsc')
-            end 
-            if ExportPng == true
-                print(this_file_path, '-dpng', append('-r', ExportResolution))
-            end 
-            if ExportTiff == true
-                print(this_file_path, '-dtiff', append('-r', ExportResolution))
-            end 
-            % saveas( gca, strcat(sub_folder_dir, '\', 'U+.fig') )
-            % saveas( gca, strcat(sub_folder_dir, '\', 'U+.emf') )
-            % saveas( gca, strcat(sub_folder_dir, '\', 'U+.png') )
+            % figure
+            % plot(t, P_pu_690V,'r','LineWidth', 1.2)
+            % grid on;
+            % legend('P+');
+            % xlabel('t/s');
+            % ylabel('P/Pn');
+            % title(['\fontname{Times new roman}P+ (690V)'])
+            % set(gca, 'xlim', [0, t_range], 'fontname', 'times new roman', 'fontsize', setFontSize)
+            % set(gcf,'unit','centimeters','position', [10,5,18,8])
+            % f_savefig(this_file_dir, 'P+', ExportFigureFormat, ExportResolution);
+
+
+            % figure
+            % plot(t,V_pu_690V,'r','LineWidth', 1.2)
+            % grid on;
+            % legend('U+');
+            % xlabel('t/s');
+            % ylabel('U/Un');
+            % title(['\fontname{Times new roman}U+ (690V)'])
+            % set(gca, 'xlim', [0, t_range], 'fontname', 'times new roman', 'fontsize', setFontSize)
+            % set(gcf,'unit','centimeters','position', [10,5,18,8])
+            % f_savefig(this_file_dir, 'U+', ExportFigureFormat, ExportResolution);
+
+
 
             %% Unified plot
-%             this_file_path = append(this_file_dir, '\', 'Unified_Plot');
-%             figure
-%             [ha, pos] = tight_subplot(5, 3, [0.04, 0.06], [0.03, 0.03], [0.06, 0.01]);
-%             set(gcf,'unit','centimeters','position',[0.5, 1, 45, 25])
-% 
-%             for hidx = 1:15
-%                 axes(ha(hidx))
-%                 switch hidx
-%                     case 1
-%                         fh1 = plot(t,V_pu_690V,'r','LineWidth', 1.2);
-%                         grid on;
-%                         legend('U+');
-%                         ylabel('U/Un');
-%                         title('\fontname{Times new roman} U+')
-%                         axis_backup_1=axis;
-%                         axis([0 t_range axis_backup_1(3:4)]);
-%                         set(gca, 'xlim', [0, t_range], 'fontname', 'times new roman', 'fontsize', setFontSize)
-%                         datatip(fh1, t_LHVRT_Iq_Test, val_LHVRT_Iq_Test);
-%                     case 2
-%                         plot(t, P_pu_690V,'r','LineWidth', 1.2)
-%                         grid on;
-%                         legend('P+');
-%                         ylabel('P/Pn');
-%                         title('\fontname{Times new roman} P+')
-%                         axis_backup_1=axis;
-%                         axis([0 t_range axis_backup_1(3:4)]);
-%                         set(gca, 'xlim', [0, t_range], 'fontname', 'times new roman', 'fontsize', setFontSize)
-%                     
-%                     case 3
-%                         plot(t, Q_pu_690V,'r','LineWidth', 1.2)
-%                         grid on;
-%                         legend('Q+');
-%                         ylabel('Q/Pn');
-%                         title('\fontname{Times new roman} Q+')
-%                         axis_backup_1=axis;
-%                         axis([0 t_range axis_backup_1(3:4)]);
-%                         set(gca, 'xlim', [0, t_range], 'fontname', 'times new roman', 'fontsize', setFontSize)
-%                     case 4
-%                         plot(t, Ip_pu_690V,'r','LineWidth', 1.2)
-%                         grid on;
-%                         legend('Ip+');
-%                         ylabel('Ip/In');
-%                         title('\fontname{Times new roman} Ip+')
-%                         set(gca, 'xlim', [0, t_range], 'fontname', 'times new roman', 'fontsize', setFontSize)
-%                     case 5
-%                         plot(t, Iq_pu_690V,'r','LineWidth', 1.2)
-%                         grid on;
-%                         hold on 
-%                         plot(t, val_LHVRT_Iq_Test_lim_vec, 'k', 'LineWidth', 1)
-%                         legend({'Iq+', 'Iq std limit'});
-%                         ylabel('Iq/In');
-%                         title('\fontname{Times new roman} Iq+')
-%                         axis_backup_1=axis;
-%                         axis([0 t_range axis_backup_1(3:4)]);
-%                         set(gca, 'xlim', [0, t_range], 'fontname', 'times new roman', 'fontsize', setFontSize)
-%                     case 6
-% %                         plot(t, Crowbar_drive, 'LineWidth', 1.2)
-% %                         hold on
-% %                         grid on
+            figure
+            [ha, pos] = tight_subplot(3, 3, [0.04, 0.06], [0.03, 0.03], [0.06, 0.01]);
+            set(gcf,'unit','centimeters','position',[0.5, 1, 45, 20])
+
+            for hidx = 1:9
+                axes(ha(hidx))
+                switch hidx
+                    case 1
+                        fh1 = plot(t,V_pu_690V,'r','LineWidth', 1.2);
+                        grid on;
+                        legend('U+');
+                        ylabel('U/Un');
+                        title('\fontname{Times new roman} U+')
+                        axis_backup_1=axis;
+                        axis([0 t_range axis_backup_1(3:4)]);
+                        set(gca, 'xlim', [0, t_range], 'fontname', 'times new roman', 'fontsize', setFontSize)
+                        datatip(fh1, t_LHVRT_Iq_Test, val_LHVRT_Iq_Test);
+                    case 2
+                        plot(t, P_pu_690V,'r','LineWidth', 1.2)
+                        grid on;
+                        legend('P+');
+                        ylabel('P/Pn');
+                        title('\fontname{Times new roman} P+')
+                        axis_backup_1=axis;
+                        axis([0 t_range axis_backup_1(3:4)]);
+                        set(gca, 'xlim', [0, t_range], 'fontname', 'times new roman', 'fontsize', setFontSize)
+                    
+                    case 3
+                        plot(t, Q_pu_690V,'r','LineWidth', 1.2)
+                        grid on;
+                        legend('Q+');
+                        ylabel('Q/Pn');
+                        title('\fontname{Times new roman} Q+')
+                        axis_backup_1=axis;
+                        axis([0 t_range axis_backup_1(3:4)]);
+                        set(gca, 'xlim', [0, t_range], 'fontname', 'times new roman', 'fontsize', setFontSize)
+                    case 4
+                        plot(t, Ip_pu_690V,'r','LineWidth', 1.2)
+                        grid on;
+                        legend('Ip+');
+                        ylabel('Ip/In');
+                        title('\fontname{Times new roman} Ip+')
+                        set(gca, 'xlim', [0, t_range], 'fontname', 'times new roman', 'fontsize', setFontSize)
+                    case 5
+                        plot(t, Iq_pu_690V,'r','LineWidth', 1.2)
+                        grid on;
+                        hold on 
+                        plot(t, val_LHVRT_Iq_Test_lim_vec, 'k', 'LineWidth', 1)
+                        legend({'Iq+', 'Iq std limit'});
+                        ylabel('Iq/In');
+                        title('\fontname{Times new roman} Iq+')
+                        axis_backup_1=axis;
+                        axis([0 t_range axis_backup_1(3:4)]);
+                        set(gca, 'xlim', [0, t_range], 'fontname', 'times new roman', 'fontsize', setFontSize)
+                    case 6
+%                         plot(t, Crowbar_drive, 'LineWidth', 1.2)
+%                         hold on
+%                         grid on
 % %                         plot(t, Chopper_drive, 'LineWidth', 1.2)
 % %                         legend({'CrowbarDrive', 'ChopperDrive'})
-% %                         title('\fontname{Times new roman} Crowbar & Chopper Drive')
-% %                         axis_backup_1=axis;
-% %                         axis([0 t_range -0.5, 1.5]);
-% %                         set(gca, 'xlim', [0, t_range], 'ylim', [-0.5, 1.5], 'fontname', 'times new roman', 'fontsize', setFontSize)
-%                     case 7
+%                         legend({'CrowbarDrive'})
+%                         title('\fontname{Times new roman} Crowbar & Chopper Drive')
+%                         axis_backup_1=axis;
+%                         axis([0 t_range -0.5, 1.5]);
+%                         set(gca, 'xlim', [0, t_range], 'ylim', [-0.5, 1.5], 'fontname', 'times new roman', 'fontsize', setFontSize)
+                    case 7
 %                         plot(t, Vdc, 'LineWidth', 1.2)
 %                         ylabel('Udc');
 %                         title('\fontname{Times new roman} Udc')
 %                         grid on 
 %                         set(gca, 'xlim', [0, t_range], 'fontname', 'times new roman', 'fontsize', setFontSize)
-%                     case 8
-%                         plot(t, Vabc_690V, 'LineWidth', 1.2)
-%                         grid on 
-%                         ylabel('Uabc (690V)');
-%                         title('\fontname{Times new roman} Uabc (690V)')
-%                         set(gca, 'xlim', [0, t_range], 'fontname', 'times new roman', 'fontsize', setFontSize)
-%                         legend({'Ua', 'Ub', 'Uc'})
-%                     case 9
-%                         plot(t, Iabc_690V, 'LineWidth', 1.2)
-%                         grid on 
-%                         ylabel('Iabc (690V)');
-%                         title('\fontname{Times new roman} Iabc (690V)')
-%                         set(gca, 'xlim', [0, t_range], 'fontname', 'times new roman', 'fontsize', setFontSize)
-%                         legend({'Ia', 'Ib', 'Ic'})
+                    case 8
+                        plot(t, Vabc_690V, 'LineWidth', 1.2)
+                        grid on 
+                        ylabel('Uabc (690V)');
+                        title('\fontname{Times new roman} Uabc (690V)')
+                        set(gca, 'xlim', [0, t_range], 'fontname', 'times new roman', 'fontsize', setFontSize)
+                        legend({'Ua', 'Ub', 'Uc'})
+                    case 9
+                        plot(t, Iabc_690V, 'LineWidth', 1.2)
+                        grid on 
+                        ylabel('Iabc (690V)');
+                        title('\fontname{Times new roman} Iabc (690V)')
+                        set(gca, 'xlim', [0, t_range], 'fontname', 'times new roman', 'fontsize', setFontSize)
+                        legend({'Ia', 'Ib', 'Ic'})
 %                     case 10
 %                         plot(t, Iabc_grid, 'LineWidth', 1.2)
 %                         grid on 
@@ -436,39 +360,30 @@ for each_folder=1:length(SubFolderCell)
 %                         title('\fontname{Times new roman}RMS and Module mag')
 %                         set(gca, 'xlim', [0, t_range], 'ylim', [-0.5, 1.5], 'fontname', 'times new roman', 'fontsize', setFontSize)
 %                         legend({'RMS Ua', 'RMS Ub', 'RMS Uc', 'Module mag'})
-%                     otherwise
-%                         disp('wrong')
-%                 end
-% 
-%             end
+                    otherwise
+                        disp('wrong')
+                end
 
-            if ExportFig == true
-%                 saveas(gcf, append(this_file_path, '.fig'))
-            end 
-            if ExportEmf == true
-                saveas(gcf, append(this_file_path, '.emf'))
-            end 
-            if ExportEps == true
-                saveas(gcf, this_file_path, 'epsc')
-            end 
-            if ExportPng == true
-                print(this_file_path, '-dpng', append('-r', ExportResolution))
-            end 
-            if ExportTiff == true
-                print(this_file_path, '-dtiff', append('-r', ExportResolution))
-            end 
+            end
+
+            f_savefig(this_file_dir, 'Unified_Plot', ExportFigureFormat, ExportResolution);
+
 
             u1 = V_pu_690V;
             p1 = P_pu_690V;
             q1 = Q_pu_690V;
             ip1 = Ip_pu_690V;
             iq1 = Iq_pu_690V;
+            uabc = Vabc_690V;
+            iabc = Iabc_690V;
             save(strcat(sub_folder_dir, '\', 'data_t'), 't');
             save(strcat(sub_folder_dir, '\', 'data_u'), 'u1');
             save(strcat(sub_folder_dir, '\', 'data_P'), 'p1');
             save(strcat(sub_folder_dir, '\', 'data_Q'), 'q1');
             save(strcat(sub_folder_dir, '\', 'data_Ip'), 'ip1');
             save(strcat(sub_folder_dir, '\', 'data_Iq'), 'iq1');
+            save(strcat(sub_folder_dir, '\', 'data_uabc'), 'uabc');
+            save(strcat(sub_folder_dir, '\', 'data_iabc'), 'iabc');
             
             close all
 

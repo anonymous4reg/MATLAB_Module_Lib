@@ -2,7 +2,7 @@
 % modified by Yamin, 2021/11/12
 % description: process Low and High freq and combine them in one .m file
 clear;clc
-RootDir = 'E:\YuDaiWan\02-data\02-Scan_data\ZC\';
+RootDir = 'C:\Users\ym\Desktop\DemoZscan\';
 % RootDir = "F:\SG1250_Data\Zscan\1-250Hz\";
 % Mat file name prefix, program will search related files in each folder
 MatFilePrefixCell = {"Lfile", "Hfile"};
@@ -13,14 +13,17 @@ VarNamePrefixCell = {"Lscan", "Hscan"};
 
 
 
-PsetCell = {'P1.0'};
-QsetCell = {'Q0.0'};
+PsetCell = {'P1.0', 'P0.9', 'P0.8', 'P0.7', 'P0.6', 'P0.5', ...
+            'P0.4', 'P0.3', 'P0.2', 'P0.1', 'P0.0'};
+QsetCell = {'Q0.0', 'Q1.0', 'Q-1.0'};
+
 FreqCell = {'Low', 'High'};  % Low or High
 
 
 SubFolderCell = f_sequence_gen_recursive({PsetCell, QsetCell}, '-');
 SubFolderCell = SubFolderCell{1};
-SubFolderCell = {'U0.95'}
+SubFolderCell = [SubFolderCell, {'U1.05-P1.0-Q0.0', 'U0.95-P1.0-Q0.0'}];
+SubFolderCell = {'P1.0-Q0.0'}
 
 setFontSize = 10;
 ExportFig = true;
@@ -64,6 +67,7 @@ for each_folder=1:length(SubFolderCell)
 
             try
                 if strcmp(Freq, 'Low') == 1
+                    % Please change Current Direction in ScanImpedanceP.m & ScanImpedanceN.m
                     file_name_splite = split(file_wanted{1}, '.');
                     file_name_without_postfix = file_name_splite{1};
                     SrcFileDir  =   sub_folder_dir;
@@ -73,7 +77,7 @@ for each_folder=1:length(SubFolderCell)
                     Freq_end    =   350;
                     Freq_step   =   1;
                     SampleTimeMicroSecond  =   100; % Sample time of data(us)
-                    SaveTempsFlag = true;
+                    SaveTempsFlag = false;
                     
                     %% DON NOT Change this block !!!
                     CmdCell = {
@@ -85,6 +89,7 @@ for each_folder=1:length(SubFolderCell)
                     ZPD_low = ZPD_SISO;
                     ZND_low = ZND_SISO;
                 elseif strcmp(Freq, 'High') == 1
+                    % Please change Current Direction in U_IZ_F_StepAuto.m
                     tmp_data = load(strcat(sub_folder_dir, file_wanted{1}));
                     tmp_data = struct2cell(tmp_data); tmp_data = cell2mat(tmp_data);
 
@@ -97,7 +102,7 @@ for each_folder=1:length(SubFolderCell)
                     Freq_end    =   2500;
                     Freq_step   =   10;
                     SampleTimeMicroSecond = 20;
-                    SaveTempsFlag = true;
+                    SaveTempsFlag = false;
                     
                     %% DON NOT Change this block !!!
                     CmdCell = {
@@ -112,17 +117,17 @@ for each_folder=1:length(SubFolderCell)
                     disp('Please set __Freq__ properly, either Low or High')
                 end
                 
-%                 mkdir(sub_freq_dir)
-%                 %% Save mat file
-%                 ZPD=ZPD_SISO;
-%                 save(strcat(sub_freq_dir, '\', 'DATA_ZPD.mat'), 'ZPD')
-% %                 save(strcat(sub_freq_dir, '\', 'DATA_ZPD_', SubFolderCell{each_folder}, '_', Freq,'.mat'), 'ZPD')
-%                 ZND=ZND_SISO;
-%                 save(strcat(sub_freq_dir, '\', 'DATA_ZND.mat'), 'ZND')
-% %                 save(strcat(sub_freq_dir, '\', 'DATA_ZND_', SubFolderCell{each_folder}, '_', Freq, '.mat'), 'ZND')
+                mkdir(sub_freq_dir)
+                %% Save mat file
+                ZPD=ZPD_SISO;
+                save(strcat(sub_freq_dir, '\', 'DATA_ZPD.mat'), 'ZPD')
+%                 save(strcat(sub_freq_dir, '\', 'DATA_ZPD_', SubFolderCell{each_folder}, '_', Freq,'.mat'), 'ZPD')
+                ZND=ZND_SISO;
+                save(strcat(sub_freq_dir, '\', 'DATA_ZND.mat'), 'ZND')
+%                 save(strcat(sub_freq_dir, '\', 'DATA_ZND_', SubFolderCell{each_folder}, '_', Freq, '.mat'), 'ZND')
                 
-                ZPD = ZPD_SISO;
-                ZND = ZND_SISO;
+                % ZPD = ZPD_SISO;
+                % ZND = ZND_SISO;
                 %%
 			    figure
 			    set(gcf,'unit','centimeters','position',[10,5,18,8+3])

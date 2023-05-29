@@ -25,9 +25,9 @@ for ff =f_start:f_step:f_end
 	UB=scan_concat(4,(ff_num*NN+1):(ff_num*NN+N));
 	UC=scan_concat(5,(ff_num*NN+1):(ff_num*NN+N));
 
-	IA=-scan_concat(6,(ff_num*NN+1):(ff_num*NN+N));
-	IB=-scan_concat(7,(ff_num*NN+1):(ff_num*NN+N));
-	IC=-scan_concat(8,(ff_num*NN+1):(ff_num*NN+N));
+	IA=scan_concat(6,(ff_num*NN+1):(ff_num*NN+N));
+	IB=scan_concat(7,(ff_num*NN+1):(ff_num*NN+N));
+	IC=scan_concat(8,(ff_num*NN+1):(ff_num*NN+N));
 
 
 	Uas=zeros(1,N );

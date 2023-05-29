@@ -64,24 +64,29 @@ for i=1:length(NameMatrix)
     Vp_coupled4 = Vn4;
     [ZPD100_349,ZND_1_249]= ScanImpedance2plusV5(Freq_middle+1,Freq_end,Freq_step,Ip3,Vp3,Ip_coupled3,Vp_coupled3,Ip4,Vp4,Ip_coupled4,Vp_coupled4);
 
-    ZPD = [ZPD1_99;ZPD100_349];
-    ZND = [ZND_n99_n1;ZND_1_249];
-    ZPD_MIMO = ZPD; % save a copy for variable name consistence without changing original code
-    ZND_MIMO = ZND;
+    % ZPD = [ZPD1_99;ZPD100_349];
+    % ZND = [ZND_n99_n1;ZND_1_249];
+    ZPD100 = [100,(ZPD1_99(99,2)+ZPD100_349(1,2))/2,(ZPD1_99(99,3)+ZPD100_349(1,3))/2];
+    ZPD = [ZPD1_99;ZPD100;ZPD100_349(1:149,:)];
+    ZND = ZND_1_249;
+
+    save(strcat(OutRoot, 'DATA_ZPD', '.mat'),'ZPD');
+    save(strcat(OutRoot, 'DATA_ZND', '.mat'),'ZND');
+
+    
 
     %测试用，正序+负序处理程序形成SISO阻抗
     [ZPD_SISO,ZND_SISO]=U_I_Z_F_1hz_1_250(Freq_begin,Freq_end,Freq_step,NN,Data);
 
-    retZPDSISO = ZPD_SISO;
-    retZNDSISO = ZND_SISO;
+
+    retZPDSISO = ZPD;
+    retZNDSISO = ZND;
     retZPDMIMO = ZPD;
     retZNDMIMO = ZND;
 
+
+
     if SaveTempsFlag == true
-        % save(strcat(OutRoot, 'DATA_ZPD_SISO.mat'), 'ZPD_SISO');
-        % save(strcat(OutRoot, 'DATA_ZND_SISO.mat'), 'ZND_SISO');
-        save(strcat(OutRoot, 'DATA_ZPD.mat'), 'ZPD');
-        save(strcat(OutRoot, 'DATA_ZND.mat'), 'ZND');
 
         save(strcat(OutRoot, 'Vp_coupled1.mat'), 'Vp_coupled1')
         save(strcat(OutRoot, 'Vp_coupled2.mat'), 'Vp_coupled2')
