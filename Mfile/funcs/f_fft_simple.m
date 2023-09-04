@@ -32,7 +32,7 @@ fft_unilateral(2:end - 1, :) = fft_unilateral(2:end - 1, :)*2.0;
 spectrum_single_mag = abs(fft_unilateral); 
 spectrum_single_angle = angle(fft_unilateral);
 
-freq_ax = fs * (0:(signal_length/2)) / signal_length;
+freq_ax = transpose(double(fs) * double(0:(signal_length/2)) / double(signal_length));
 
 mag_ax = spectrum_single_mag;
 ang_ax = spectrum_single_angle; % .* (abs(mag_ax) >= 1e-10); % avoiding angle singular
