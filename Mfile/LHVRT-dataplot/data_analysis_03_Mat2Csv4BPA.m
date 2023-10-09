@@ -4,9 +4,9 @@
 % would be used by BPA plot app.
 clear;clc
 % ResampleTs = 10e-3 for BPA, 100e-6 for ADPSS
-ResampleTs = 10e-3;
-% ResampleTs = 100e-6;
-RootDir = "E:\20211028_华锐维帝\Vertiv3MW_data\";
+% ResampleTs = 10e-3;
+ResampleTs = 100e-6;
+RootDir = "F:\Data\20230531_骆驼沟禾望1.5MW\03-data\2023.9.15\";
 
 
 % 

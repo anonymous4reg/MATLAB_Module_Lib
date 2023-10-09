@@ -4,7 +4,7 @@
 % Step 3: Exec this prog.
 
 %% code start
-SrcDir = 'Z:\Travail\RE\HIL\20230804_悦梁三一禾望1.5MW双馈\04-德维创导出\';
+SrcDir = 'Z:\Travail\RE\HIL\20230804_悦梁三一禾望1.5MW双馈\04-德维创导出\vrt_idle\';
 % DstDir = '';
 
 % Mat file name prefix, program will search related files in each folder
@@ -16,7 +16,8 @@ VarNamePrefix = 'opvar';
 Field1 = {'VRT'};
 Field2 = {'3ph', '2ph'};
 Field3 = {'u120', 'u125', 'u130'};
-Field4 = {'p1.0', 'p0.2'};
+% Field4 = {'p1.0', 'p0.2'};
+Field4 = {'idle'};
 
 
 

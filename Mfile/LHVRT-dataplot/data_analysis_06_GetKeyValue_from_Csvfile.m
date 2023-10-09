@@ -1,9 +1,10 @@
 clear;clc
 %% User could change here
-RootDir = 'C:\Users\ym\Desktop\BPA\';
+RootDir = 'F:\Data\20230327_桃山湖明阳禾望1.5MW\02-data\5.24\vrt\Csv4Bpa\';
 OutDir = RootDir;
 OutFileName = 'KeyValue4Bpa';  % Output file name 输出文件名
 Generator_Type = 'WT'; % 'WT' or 'SVG'
+
 % Generating file names. 
 % f_sequence_gen_recursive({cell1, cell2,...}, 'delimitor') is used for generating
 % file name sequence. cell1, cell2... should be cell type, and all cells should be
@@ -70,13 +71,25 @@ ret_cell = {};
 tic
 for each_file=1:length(SubFolderCell)
 	clearvars u_before iq_before ip_before u_after iq_after ip_after tmp_cell
+    file_table_head = TableHead;
 	disp(strcat('[', num2str(each_file), '/', num2str(length(SubFolderCell)) , '] - ', ...
         'Working on: ', SubFolderCell{each_file}))
     % file_t = strcat(sub_folder_dir, '\', 'data_t.mat');
     csv_file_name = strcat(RootDir, SubFolderCell{each_file}, '.csv');
-    csv_table = readtable(csv_file_name, 'ReadVariableNames', false);
+    csv_table = readtable(csv_file_name, 'ReadVariableNames', true);
     csv_array = csv_table.Variables;
-    csv_table = array2table(csv_array, 'VariableNames', TableHead);
+    csv_table_head = csv_table.Properties.VariableNames;
+    csv_table_head_len = length(csv_table_head);
+    TableHead_len = length(TableHead);
+    if csv_table_head_len > TableHead_len
+        warning("Table head not consistent with buitin cell, maybe you use ..." + ...
+            "the wrong Type or maybe your csv contains uabc/iabc column. ..." + ...
+            "Please check carefully if the result does not match your prediction.")
+        for idx = (TableHead_len+1):csv_table_head_len
+            file_table_head{idx} = csv_table_head{idx};
+        end
+    end
+    csv_table = array2table(csv_array, 'VariableNames', file_table_head);
     
 
     % before fault

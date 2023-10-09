@@ -37,7 +37,7 @@ ExportPng = true;
 ExportTiff = false;
 ExportEps = false;
 ExportSvg = false;
-ExportResolution = 300; %dpi
+ExportResolution = '300'; %dpi
 
 
 tic
@@ -56,7 +56,7 @@ for each_folder=1:length(SubFolderCell)
 	if length(sub_folder_files) == 1
 	% If only ONE suitable .mat file founded, then do it.
 		
-		disp(append('Loading ', 'sub_folder_files', ' ...'))
+		disp(strcat('Loading ', 'sub_folder_files', ' ...'))
 		load(strcat(sub_folder_dir, sub_folder_files{1}))
 		this_file_dir = sub_folder_dir;
 		var_name_found = who;
