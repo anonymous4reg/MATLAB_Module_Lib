@@ -27,8 +27,8 @@ Field4 = {'p1.0', 'p0.2'};
 SubFolderCell2 = f_sequence_gen_recursive({Field1, Field2, Field3, Field4}, '_');
 SubFolderCell = SubFolderCell2{1};
 
-SubFolderCell =  {'VRT_3ph_u35_p0.2'};  %// Umcomment this line to overide the batch command
-SubFolderCell =  {'VRT_2ph_u20_p0.2'}; 
+% SubFolderCell =  {'VRT_3ph_u35_p0.2'};  %// Umcomment this line to overide the batch command
+% SubFolderCell =  {'VRT_2ph_u20_p0.2'}; 
 
 ExportFigureFormat = {'fig', 'png'};
 ExportFig = true;

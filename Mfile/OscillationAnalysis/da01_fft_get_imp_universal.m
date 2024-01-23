@@ -4,16 +4,16 @@
 close all;clc
 
 %% User define zone
-MatUrl = 'D:\Travail\RE\HIL\[Routine] MMC-HVDC\20230411_ZhongDu\02-Data\Recorder\jishancun\2023-04-11@09-48-36.369500.csv';
+MatUrl = 'Your csv file directory.csv';
 
 
 % Define which column you select as Uabc and Iabc
-USabcIdx = 3:5;
-ISabcIdx = 28:30;
+USabcIdx = (1:3)+2;
+ISabcIdx = (9:11)+2;
 % which freq do you want to focus on
 WHICH_FREQ = [43, 50, 57];
 % Sampling frequency, must consist with CSV
-SAMPLE_FREQ = 2e3;
+SAMPLE_FREQ = int64(2e3);
 T_SPAN = 1;  % signal real time span for selected window
 
 
