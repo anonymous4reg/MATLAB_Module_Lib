@@ -1,7 +1,7 @@
 % 单频vs频耦结果
 clear;close all; clc
 
-RootDir = "D:\Travail\RE\HIL\[Routine] 沽源振荡\20240105_沽源振荡_华北捅国调\03-ADPSS仿真复现\01-扫频结果数据\网侧-串补启用\process\";
+RootDir = "D:\Travail\RE\HIL\[Routine] 沽源振荡\20240105_沽源振荡_华北捅国调\03-ADPSS仿真复现\01-扫频结果数据\远景5MW-已优化_01_35kV_有倍乘200台\process\";
 FileName = "DATA_ZPD.mat";
 FileUrl = fullfile(RootDir, FileName);
 

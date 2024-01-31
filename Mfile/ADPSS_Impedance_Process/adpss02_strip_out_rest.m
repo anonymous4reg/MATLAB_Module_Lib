@@ -2,10 +2,10 @@
 % 将“去头”的数据导入，删掉扰动注入间隔之间的等待部分，重新叠合成半实物扫频程序能直接处理的数据
 % Data rearrangement
 clear; close all; clc
-RootDir = "D:\Travail\RE\HIL\[Routine] 沽源振荡\20240105_沽源振荡_华北捅国调\03-ADPSS仿真复现\01-扫频结果数据\网侧-串补启用\";
+RootDir = "D:\Travail\RE\HIL\[Routine] 沽源振荡\20240105_沽源振荡_华北捅国调\03-ADPSS仿真复现\01-扫频结果数据\远景5MW-已优化_01_35kV_有倍乘200台\";
 DstSubDir = "\process\";
 DstDir = fullfile(RootDir, DstSubDir);
-FileName = {"网侧-串补启用_head_cutted.mat"};
+FileName = {"远景5MW-已优化_01_35kV_有倍乘200台_head_cutted.mat"};
 mkdir(DstDir)
 
 
@@ -17,7 +17,7 @@ TS = 0.0002;
 FS = int64(1/TS);
 
 FreqBegin = 1;
-FreqEnd = 99;
+FreqEnd = 100;
 FreqStep = 1;
 
 %% Specify the column index number of time/uabc/iabc

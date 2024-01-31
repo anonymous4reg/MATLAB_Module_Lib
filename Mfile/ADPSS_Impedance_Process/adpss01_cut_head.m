@@ -8,7 +8,7 @@ T_DELAY = 5;
 TS = 0.0002;
 FS = int64(1/TS);
 FIRST_INDEX = T_DELAY * FS + 1;
-U_BASE = 525e3;
+U_BASE = 35e3;
 S_BASE = 100e6;
 I_BASE = S_BASE / U_BASE / sqrt(3);
 
@@ -18,8 +18,8 @@ UABC_COLUMN_INDEX = [2:4];
 IABC_COLUMN_INDEX = [5:7];
 
 
-RootDir = "D:\Travail\RE\HIL\[Routine] 沽源振荡\20240105_沽源振荡_华北捅国调\03-ADPSS仿真复现\01-扫频结果数据\网侧-串补启用\";
-FileName = {"网侧-串补启用.csv"};
+RootDir = "D:\Travail\RE\HIL\[Routine] 沽源振荡\20240105_沽源振荡_华北捅国调\03-ADPSS仿真复现\01-扫频结果数据\远景5MW-已优化_01_35kV_有倍乘200台\";
+FileName = {"远景5MW-已优化_01_35kV_有倍乘200台.csv"};
 DstSubDir = "\";
 DstDir = fullfile(RootDir, DstSubDir);
 mkdir(DstDir)
