@@ -223,7 +223,7 @@ ZND=ZN;
  ZND_SISO = ZND;
  ZPD_SISO = ZPD;
  
- save('VIimg', 'Vimg', 'Iimg')
+ % save('VIimg', 'Vimg', 'Iimg')
 %     save(strcat(OutRoot, 'DATA_ZPD', '.mat'),'ZPD');
 %     save(strcat(OutRoot, 'DATA_ZND', '.mat'),'ZND');
 

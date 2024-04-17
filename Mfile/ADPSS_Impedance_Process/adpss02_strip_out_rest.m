@@ -2,10 +2,12 @@
 % 将“去头”的数据导入，删掉扰动注入间隔之间的等待部分，重新叠合成半实物扫频程序能直接处理的数据
 % Data rearrangement
 clear; close all; clc
-RootDir = "D:\Travail\RE\HIL\[Routine] 沽源振荡\20240105_沽源振荡_华北捅国调\03-ADPSS仿真复现\01-扫频结果数据\远景5MW-已优化_01_35kV_有倍乘200台\";
-DstSubDir = "\process\";
+RootDir = "D:\Travail\RE\HIL\[Routine] 沽源振荡\20240105_沽源振荡_华北捅国调\03-ADPSS仿真复现\01-扫频结果数据\20240219_沽源大网_B机型_变压器问题-录波文件\";
+SrcSubDir = '20240219_沽源大网_B机型_变压器问题-03-扫频结果600台（供FFT）';
+SrcDir = fullfile(RootDir, SrcSubDir);
+DstSubDir = fullfile(SrcSubDir, "\process\");
 DstDir = fullfile(RootDir, DstSubDir);
-FileName = {"远景5MW-已优化_01_35kV_有倍乘200台_head_cutted.mat"};
+FileName = {strcat(SrcSubDir, "_head_cutted.mat")};
 mkdir(DstDir)
 
 
@@ -29,7 +31,7 @@ BaseName = {};
 for idx = 1:length(FileName)
     [~, file_name, ~] = fileparts(FileName{idx});
     BaseName = [BaseName, file_name];
-    FileUrl = [FileUrl, fullfile(RootDir, FileName{idx})];
+    FileUrl = [FileUrl, fullfile(SrcDir, FileName{idx})];
 end
 
 for idx = 1:length(FileUrl)

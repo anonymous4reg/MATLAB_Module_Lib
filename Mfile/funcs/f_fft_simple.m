@@ -1,6 +1,9 @@
 function [freq_ax, mag_ax, ang_ax, complex_ax] = f_fft_simple(input_sig, ...
 	fs, signal_length)
-% __f_fft_simple__ Summary of this function goes here
+% __f_fft_simple__ 
+%	version 2: 
+%			2024/4/17 - add pi/2 to the angle of fft, because Matlab take Cosine as phase=0,
+%						here change to Sine as phase=0
 %   fs: sampling frequency
 %	ts: sample time, = 1/fs
 %	t_span: time span
@@ -35,7 +38,7 @@ spectrum_single_angle = angle(fft_unilateral);
 freq_ax = transpose(double(fs) * double(0:(signal_length/2)) / double(signal_length));
 
 mag_ax = spectrum_single_mag;
-ang_ax = spectrum_single_angle; % .* (abs(mag_ax) >= 1e-10); % avoiding angle singular
-complex_ax = fft_unilateral;
+ang_ax = spectrum_single_angle + pi/2; % .* (abs(mag_ax) >= 1e-10); % avoiding angle singular
+complex_ax = fft_unilateral * exp(1j*pi/2);
 end
 

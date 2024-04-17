@@ -1,6 +1,6 @@
 clear;clc
 %% User could change here
-RootDir = 'F:\Data\20230327_桃山湖明阳禾望1.5MW\02-data\5.24\vrt\Csv4Bpa\';
+RootDir = 'C:\Users\ym\Desktop\BPA\';
 OutDir = RootDir;
 OutFileName = 'KeyValue4Bpa';  % Output file name 输出文件名
 Generator_Type = 'WT'; % 'WT' or 'SVG'
@@ -12,15 +12,15 @@ Generator_Type = 'WT'; % 'WT' or 'SVG'
 % the program will enumerate them recursively.
 % f_sequence_gen_recursive({cell1, cell2,...}, '分隔符')用于生成全部文件名序列，
 % 只要保证cell1、cell2...为元胞即可，字段数量没有限制，程序为递归调用。
+Field1 = {'VRT'};
+Field2 = {'20%', '35%', '50%', '75%', '120%', '125%', '130%'};
+Field3 = {'3ph', '2ph'};
+Field4 = {'big', 'small'};
+
 % Field1 = {'VRT'};
 % Field2 = {'3ph', '2ph'};
 % Field3 = {'u20', 'u35', 'u50', 'u75', 'u120', 'u125', 'u130'};
 % Field4 = {'p1.0', 'p0.2'};
-
-Field1 = {'VRT'};
-Field2 = {'3ph', '2ph'};
-Field3 = {'u20', 'u35', 'u50', 'u75', 'u120', 'u125', 'u130'};
-Field4 = {'p1.0', 'p0.2'};
 
 
 SubFolderCell2 = f_sequence_gen_recursive({Field1, Field2, Field3, Field4}, '_');
