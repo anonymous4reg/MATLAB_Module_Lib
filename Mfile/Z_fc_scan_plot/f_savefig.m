@@ -1,7 +1,8 @@
 function [outputArg1] = f_savefig(arg_save_dir, arg_file_name, arg_format_cell, arg_res)
-%UNTITLED Summary of this function goes here
+% fig save handy function
+% 2026/9/11: v1.1 file_url path concate using fullfile instead of strcat.
 %   arg_save_dir: the folder you want to save these figs in
-%	arg_file_name: file name, the real file path will be : 
+%	arg_file_name: file name, the real file path will be :
 %			arg_save_dir + '/' + arg_file_name
 %	arg_format_cell: a cell specify format in string. e.g: {'fig', 'emf', 'shit', 'tif', 'jpg', 'eps'}
 % 	arg_res: resolution for bitmap (jpg,png,tiff), e.g: 300
@@ -17,7 +18,7 @@ function [outputArg1] = f_savefig(arg_save_dir, arg_file_name, arg_format_cell, 
 
 	assert(isa(arg_res, 'double'), 'resolution must be a Number! e.g: 300')
 
-	file_url = strcat(arg_save_dir, '\', arg_file_name);
+	file_url = fullfile(arg_save_dir, arg_file_name);
 
 	len_format_cell = length(arg_format_cell);
 	for idx = 1:len_format_cell
@@ -43,26 +44,26 @@ function [outputArg1] = f_savefig(arg_save_dir, arg_file_name, arg_format_cell, 
 	if ExportFig == true
 		fprintf('Saving %s ...\n', strcat(arg_file_name, '.fig'))
 	    saveas(gcf, strcat(file_url, '.fig'))
-	end 
+	end
 	if ExportEmf == true
 		fprintf('Saving %s ...\n', strcat(arg_file_name, '.emf'))
 	    saveas(gcf, strcat(file_url, '.emf'))
-	end 
+	end
 	if ExportEps == true
 		fprintf('Saving %s ...\n', strcat(arg_file_name, '.eps'))
 	    saveas(gcf, file_url, 'epsc')
-	end 
+	end
 	if ExportPng == true
 		fprintf('Saving %s ...\n', strcat(arg_file_name, '.png'))
-	    print(file_url, '-dpng', strcat('-r', ExportResolution))
-	end 
+	    print(strcat(file_url, '.png'), '-dpng', strcat('-r', ExportResolution))
+	end
 	if ExportJpg == true
 		fprintf('Saving %s ...\n', strcat(arg_file_name, '.jpg'))
-	    print(file_url, '-djpeg', strcat('-r', ExportResolution))
-	end 
+	    print(strcat(file_url, '.jpg'), '-djpeg', strcat('-r', ExportResolution))
+	end
 	if ExportTif == true
 		fprintf('Saving %s ...\n', strcat(arg_file_name, '.tif'))
-	    print(file_url, '-dtiff', strcat('-r', ExportResolution))
-	end 
+	    print(strcat(file_url, '.tif'), '-dtiff', strcat('-r', ExportResolution))
+	end
 
 end

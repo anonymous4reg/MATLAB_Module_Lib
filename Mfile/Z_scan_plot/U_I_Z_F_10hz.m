@@ -3,7 +3,7 @@
 % clc
 % load('Hfile_6.mat')
 % scan_0 = Hscan_6;
-NN=50000;%%跟采样点数有关
+NN=20000;%%跟采样点数有关
 N=NN*1;
 
 

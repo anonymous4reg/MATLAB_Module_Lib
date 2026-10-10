@@ -1,6 +1,6 @@
 function [ZPD_SISO,ZND_SISO]=U_I_Z_F_1hz_1_250(Freq_begin,Freq_end,Freq_step,NN,Data)
 
-Data = cell2mat(struct2cell(Data));
+% Data = cell2mat(struct2cell(Data));
 Impedance_scan=Data;
 
 
@@ -12,11 +12,6 @@ step = Freq_step;
 ZP=zeros(f_end-f_start,3);
 ZN=zeros(f_end-f_start,3);
 ZA=zeros(f_end-f_start,3);
-
-Vimg.p = [];
-Vimg.n = [];
-Iimg.p = [];
-Iimg.n = [];
 
 for ff =f_start:f_end   
 
@@ -147,10 +142,7 @@ In = (IACP (:,2).*exp(1i*IACP (:,3))+IACP (:,4).*exp(1i*(IACP(:,5)-2*pi/3))+IACP
 Vp = (VACP (:,2).*exp(1i*VACP (:,3))+VACP (:,4).*exp(1i*(VACP(:,5)+2*pi/3))+VACP (:,6).*exp(1i*(VACP(:,7)-2*pi/3)))/3;
 Vn = (VACP (:,2).*exp(1i*VACP (:,3))+VACP (:,4).*exp(1i*(VACP(:,5)-2*pi/3))+VACP (:,6).*exp(1i*(VACP(:,7)+2*pi/3)))/3;
 
-Vimg.p = [Vimg.p; Vp];
-Vimg.n = [Vimg.n; Vn];
-Iimg.p = [Iimg.p; Ip];
-Iimg.n = [Iimg.n; In];
+
 % ×è¿¹¾ØÕó
 Zp = Vp./Ip;
 Zn = Vn./In;
@@ -176,18 +168,14 @@ Zpx_phase=angle(Zp)*180/pi;
 Znx_phase=angle(Zn)*180/pi;
 Zax_phase=angle(Za)*180/pi;
 
-Zpx_phase = f_phase_round_180(Zpx_phase);
-Znx_phase = f_phase_round_180(Znx_phase);
-Zax_phase = f_phase_round_180(Zax_phase);
-% if ff<=50 & Zpx_phase<-110
-%     Zpx_phase = Zpx_phase + 360;
-% end
-% if (ff>50 & ff<100) & Zpx_phase>120
-%     Zpx_phase = Zpx_phase - 360;
-% end    
+if ff<=50 & Zpx_phase<-110
+    Zpx_phase = Zpx_phase + 360;
+end
+if (ff>50 & ff<100) & Zpx_phase>120
+    Zpx_phase = Zpx_phase - 360;
+end    
 
 %Zpx_phase=angle(Zp)*180/pi;
-
 
 ZP(ff-f_start+1,:) = [ff,abs(Zp), Zpx_phase];
 ZN (ff-f_start+1,:)= [ff,abs(Zn), Znx_phase];
@@ -222,8 +210,6 @@ ZND=ZN;
 
  ZND_SISO = ZND;
  ZPD_SISO = ZPD;
- 
- save('VIimg', 'Vimg', 'Iimg')
 %     save(strcat(OutRoot, 'DATA_ZPD', '.mat'),'ZPD');
 %     save(strcat(OutRoot, 'DATA_ZND', '.mat'),'ZND');
 

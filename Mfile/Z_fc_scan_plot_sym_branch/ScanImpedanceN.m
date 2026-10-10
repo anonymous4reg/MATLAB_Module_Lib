@@ -1,6 +1,6 @@
 function [In2,Vn2,In_coupled2,Vn_coupled2] = ScanImpedance2(Freq_begin,Freq_end,Freq_step,NN,Data)
 
-Data = cell2mat(struct2cell(Data));
+% Data = cell2mat(struct2cell(Data));
 scan_concat=Data;
 
 
@@ -185,11 +185,61 @@ for ff =f_start:f_step:f_end
     Vn(ff_count)=magVn*cos(phaseVn)+1i*magVn*sin(phaseVn);
     Vn_coupled(ff_count)=magVn_coupled*cos(phaseVn_coupled)+1i*magVn_coupled*sin(phaseVn_coupled);
     
-
+%     
+% 	% 阻抗矩阵
+% 	Zp = Vp./Ip;
+% 	Zn = Vn./In;
+% 
+% 	%Zp = abs(Uas_fft./Ias_fft);
+% 
+% 	Ia = IACP (:,2).*exp(1i*IACP (:,3));
+% 	Va = VACP (:,2).*exp(1i*VACP (:,3));
+% 	Za= Va./Ia;
+% 	% 
+% 	% Ib = IACP (:,4).*exp(1i*IACP (:,5));
+% 	% Vb = VACP (:,4).*exp(1i*VACP (:,5));
+% 	% Zb= Vb./Ib
+% 	% 
+% 	% Ic = IACP (:,6).*exp(1i*IACP (:,7));
+% 	% Vc = VACP (:,6).*exp(1i*VACP (:,7));
+% 	% Zc= Vc./Ic
+% 
+% 	% 阻抗相角折算至±180°之间
+% 	Zpx_phase=angle(Zp)*180/pi;
+% 	Znx_phase=angle(Zn)*180/pi;
+% 	Zax_phase=angle(Za)*180/pi;
+% 
+% 	if ff<=50 & Zpx_phase<-110
+% 	    Zpx_phase = Zpx_phase + 360;
+% 	end
+% 	if (ff>50 & ff<100) & Zpx_phase>120
+% 	    Zpx_phase = Zpx_phase - 360;
+% 	end    
+% 
+% 	%Zpx_phase=angle(Zp)*180/pi;
+% 
+% 	ZP(ff_num+1,:) = [ff,abs(Zp), Zpx_phase];
+% 	ZN (ff_num+1,:)= [ff,abs(Zn), Znx_phase];
+% 	ZA (ff_num+1,:)= [ff,abs(Za), Zax_phase];
 %     
 end
 
-
+% Ip1 = Ip;
+% In1 = In;
+% Vp1 = Vp;
+% Vn1 = Vn;
+% Ip_coupled1 = Ip_coupled;
+% In_coupled1 = In_coupled;
+% Vp_coupled1 = Vp_coupled;
+% Vn_coupled1 = Vn_coupled;
+% save Ip1 Ip1;
+% % save In1 In1;
+% save Vp1 Vp1;
+% % save Vn1 Vn1;
+% save Ip_coupled1 Ip_coupled1;
+% % save In_coupled1 In_coupled1;% 
+% save Vp_coupled1 Vp_coupled1;
+% save Vn_coupled1 Vn_coupled1;
 
 Ip2 = Ip;
 In2 = In;
@@ -207,5 +257,39 @@ Vn_coupled2 = Vn_coupled;
 % % save In_coupled2 In_coupled2;
 % save Vp_coupled2 Vp_coupled2;
 % % save Vn_coupled2 Vn_coupled2;
+
+
+
+
+
+
+% save ZN;
+
+% figure
+% subplot(2,1,1);
+% plot(ZP(:,1),ZP(:,2));
+% xlabel('频率（Hz)');
+% ylabel('幅值（Ohm)');
+% subplot(2,1,2);
+% plot(ZP(:,1),ZP(:,3));
+% xlabel('频率（Hz)');
+% ylabel('相角（度)');
+
+% figure
+% subplot(2,1,1);
+% plot(ZA(:,1),20*log(ZA(:,2)));
+% xlabel('频率（Hz)');
+% ylabel('幅值（dB)');
+% subplot(2,1,2);
+% plot(ZA(:,1),ZA(:,3));
+% xlabel('频率（Hz)');
+% ylabel('相角（度)');
+% 
+% save([case_name, '/', 'DATA_ZP', '.mat'], 'ZP')
+% saveas(gca, [case_name, '/', 'ImpedanceScan.png'])
+% saveas(gca, [case_name, '/', 'ImpedanceScan.fig'])
+% saveas(gca, [case_name, '/', 'ImpedanceScan.emf'])
+
+% close all
 
 

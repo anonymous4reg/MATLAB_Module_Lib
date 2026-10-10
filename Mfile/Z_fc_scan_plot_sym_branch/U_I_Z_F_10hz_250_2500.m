@@ -1,13 +1,13 @@
-function U_I_Z_F_10hz_250_2500(Step,Data,OutRoot)
+function [retZPD, retZND] = U_I_Z_F_10hz_250_2500(Step,Data,OutRoot)
 
-Data = cell2mat(struct2cell(Data));
+% Data = cell2mat(struct2cell(Data));
 Impedance_scan=Data;
 
 
 NN=1/Step;
 N=NN*1;
-f_start=150;
-f_end=2490;
+f_start=250;
+f_end=2500;
 % Impedance_scan=Impedance_scan_1;
 ZP=zeros((f_end-f_start)/10+1,3);
 ZN=zeros((f_end-f_start)/10+1,3);
@@ -22,9 +22,9 @@ UA=Impedance_scan(3,((ff-f_start)/10*(NN)+1):((ff-f_start)/10*(NN)+N) );
 UB=Impedance_scan(4,((ff-f_start)/10*(NN)+1):((ff-f_start)/10*(NN)+N) );
 UC=Impedance_scan(5,((ff-f_start)/10*(NN)+1):((ff-f_start)/10*(NN)+N) );
 
-IA=-Impedance_scan(6,((ff-f_start)/10*(NN)+1):((ff-f_start)/10*(NN)+N) );
-IB=-Impedance_scan(7,((ff-f_start)/10*(NN)+1):((ff-f_start)/10*(NN)+N) );
-IC=-Impedance_scan(8,((ff-f_start)/10*(NN)+1):((ff-f_start)/10*(NN)+N) );
+IA=Impedance_scan(6,((ff-f_start)/10*(NN)+1):((ff-f_start)/10*(NN)+N) );
+IB=Impedance_scan(7,((ff-f_start)/10*(NN)+1):((ff-f_start)/10*(NN)+N) );
+IC=Impedance_scan(8,((ff-f_start)/10*(NN)+1):((ff-f_start)/10*(NN)+N) );
 
 % figure;
 % subplot(2,3,1)
@@ -171,38 +171,19 @@ Znx_phase=angle(Zn)*180/pi;
 ZP((ff-f_start)/10+1,:) = [ff,abs(Zp), Zpx_phase];
 ZN((ff-f_start)/10+1,:)= [ff,abs(Zn), Znx_phase];
 end
-ZPD=ZP(11:end,:,:);
+ZPD=ZP(1:end-1,:,:);
 % ZPD=ZP;
 
 
-figure
-subplot(2,1,1);
-plot(ZP(:,1),20*log(ZP(:,2)));
-xlabel('频率（Hz)');
-ylabel('幅值（dB)');
-subplot(2,1,2);
-plot(ZP(:,1),ZP(:,3));
-xlabel('频率（Hz)');
-ylabel('相角（度)');
-saveas(gca, 'ZP.png')
 
 
-ZND=ZN(11:end,:,:);
+ZND=ZN(1:end-1,:,:);
 % ZND=ZN;
 
 
-figure
-subplot(2,1,1);
-plot(ZN(:,1),20*log(ZN(:,2)));
-xlabel('频率（Hz)');
-ylabel('幅值（dB)');
-subplot(2,1,2);
-plot(ZN(:,1),ZN(:,3));
-xlabel('频率（Hz)');
-ylabel('相角（度)');
-saveas(gca, 'ZN.png')
-    save(strcat(OutRoot, 'DATA_ZPD', '.mat'),'ZPD');
-    save(strcat(OutRoot, 'DATA_ZND', '.mat'),'ZND');
 
-  
+
+
+retZPD = ZPD;
+retZND = ZND;
 close all

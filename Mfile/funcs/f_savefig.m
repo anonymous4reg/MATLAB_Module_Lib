@@ -17,7 +17,10 @@ function [outputArg1] = f_savefig(arg_save_dir, arg_file_name, arg_format_cell, 
 
 	assert(isa(arg_res, 'double'), 'resolution must be a Number! e.g: 300')
 
-	file_url = strcat(arg_save_dir, '\', arg_file_name);
+	% 用 fullfile 拼路径：自动使用当前平台的分隔符（macOS/Linux 为 '/'，Windows 为 '\'）
+	% 旧写法 strcat(arg_save_dir, '\', arg_file_name) 在 macOS 上会把 '\' 当成普通字符，
+	% 导致 saveas 生成的文件名里带反斜杠、且落到上一级目录（print 则会自动去掉 '\'）。
+	file_url = fullfile(arg_save_dir, arg_file_name);
 
 	len_format_cell = length(arg_format_cell);
 	for idx = 1:len_format_cell

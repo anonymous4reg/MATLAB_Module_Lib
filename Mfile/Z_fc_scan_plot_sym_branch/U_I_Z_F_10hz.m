@@ -23,9 +23,9 @@ UA=scan_0(3,((ff-f_start)/10*(NN)+1):((ff-f_start)/10*(NN)+N) );
 UB=scan_0(4,((ff-f_start)/10*(NN)+1):((ff-f_start)/10*(NN)+N) );
 UC=scan_0(5,((ff-f_start)/10*(NN)+1):((ff-f_start)/10*(NN)+N) );
 
-IA=-scan_0(6,((ff-f_start)/10*(NN)+1):((ff-f_start)/10*(NN)+N) );
-IB=-scan_0(7,((ff-f_start)/10*(NN)+1):((ff-f_start)/10*(NN)+N) );
-IC=-scan_0(8,((ff-f_start)/10*(NN)+1):((ff-f_start)/10*(NN)+N) );
+IA=scan_0(6,((ff-f_start)/10*(NN)+1):((ff-f_start)/10*(NN)+N) );
+IB=scan_0(7,((ff-f_start)/10*(NN)+1):((ff-f_start)/10*(NN)+N) );
+IC=scan_0(8,((ff-f_start)/10*(NN)+1):((ff-f_start)/10*(NN)+N) );
 
 % figure;
 % subplot(2,3,1)

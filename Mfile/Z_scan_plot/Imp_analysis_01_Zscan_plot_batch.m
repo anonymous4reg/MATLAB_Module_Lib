@@ -2,7 +2,7 @@
 % modified by Yamin, 2021/11/12
 % description: process Low and High freq and combine them in one .m file
 clear;clc
-RootDir = "C:\Users\ym\Desktop\";
+RootDir = "D:\34JiuLongQuan_MY_HW_Data\Zscan\";
 % RootDir = "F:\SG1250_Data\Zscan\1-250Hz\";
 % Mat file name prefix, program will search related files in each folder
 MatFilePrefixCell = {"Lfile", "Hfile"};
@@ -10,8 +10,8 @@ MatFilePrefixCell = {"Lfile", "Hfile"};
 % MatFilePrefixCell = {"Hfile"};
 
 % Variable name prefix, after loading a .mat file, program will search related variable name
-% VarNamePrefixCell = {"Lscan", "Hscan"};
-VarNamePrefixCell = {"scan_concat"};
+VarNamePrefixCell = {"Lscan", "Hscan"};
+% VarNamePrefixCell = {"Lscan"};
 % VarNamePrefixCell = {"Hscan"};
 
 % Idle case processing
@@ -21,8 +21,8 @@ VarNamePrefixCell = {"scan_concat"};
 PsetCell = {'P1.0'};
 QsetCell = {'Q0.0'};
 
-% FreqCell = {'Low', 'High'};  % Low or High
-FreqCell = {'Low'};  % Low or High
+FreqCell = {'Low', 'High'};  % Low or High
+% FreqCell = {'Low'};  % Low or High
 % FreqCell = { 'High'};  % Low or High
 
 SubFolderCell = {};
@@ -30,7 +30,7 @@ SubFolderCell = {};
 SubFolderCell = f_sequence_gen_recursive({PsetCell, QsetCell}, '-');
 SubFolderCell = SubFolderCell{1};
 
-SubFolderCell = {'THU_imp'};
+SubFolderCell = {'P1.0-Q0.0'}; %修改成对应文件夹名称，程序自动计算并保存图片
 
 setFontSize = 10;
 ExportFig = true;
@@ -113,7 +113,7 @@ for each_folder=1:length(SubFolderCell)
 				    set(gca, 'fontname', 'Times new roman')
                     set(gca, 'xlim', [0, 250])
 				    subplot(2,1,2);
-                    f_plot_risk_area_mmc_hvdc(gca)
+                    f_plot_risk_area_guyuan(gca)
 				    plot(ZP(:,1),ZP(:,3), '.-', 'MarkerIndices', 1:2:length(ZP), 'color', 'k', ...
 					    'linewidth', 1.0, 'color', 'k');
 				    xlabel('Frequency (Hz)');

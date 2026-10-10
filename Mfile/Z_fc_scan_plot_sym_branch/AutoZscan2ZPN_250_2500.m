@@ -4,38 +4,62 @@ clc
 
 Step =50e-6; %仿真步长
 %% 将扫频数据命名为下面矩阵名称形式
-%风机或者光伏
-% NameMatrix = {'P1.0-Q1.0','P1.0-Q0.0','P1.0-Q-1.0',...
-%               'P0.9-Q1.0','P0.9-Q0.0','P0.9-Q-1.0',...
-%               'P0.8-Q1.0','P0.8-Q0.0','P0.8-Q-1.0',...
-%               'P0.7-Q1.0','P0.7-Q0.0','P0.7-Q-1.0',...
-%               'P0.6-Q1.0','P0.6-Q0.0','P0.6-Q-1.0',...
-%               'P0.5-Q1.0','P0.5-Q0.0','P0.5-Q-1.0',...
-%               'P0.4-Q1.0','P0.4-Q0.0','P0.4-Q-1.0',...
-%               'P0.3-Q1.0','P0.3-Q0.0','P0.3-Q-1.0',...
-%               'P0.2-Q1.0','P0.2-Q0.0','P0.2-Q-1.0',...
-%               'P0.1-Q1.0','P0.1-Q0.0','P0.1-Q-1.0',...
-%               'P0.0-Q1.0','P0.0-Q0.0','P0.0-Q-1.0',...
-%               'U1.05','U0.95'}; 
-% %SVG
-% NameMatrix = {'U1.0-Q1.0' 'U1.0-Q0.2' 'U1.0-Q-0.2' 'U1.0-Q-1.0'...
-%                'U1.05-Q1.0' 'U1.05-Q0.2' 'U1.05-Q-0.2' 'U1.05-Q-1.0'...
-%               'U0.95-Q1.0' 'U0.95-Q0.2' 'U0.95-Q-0.2' 'U0.95-Q-1.0'};
-NameMatrix = {'U1.0-Q1.0','U1.0-Q0.75','U1.0-Q-0.75','U1.0-Q-1.0',...
-              'U1.0-Q0.5','U1.0-Q0.25','U1.0-Q-0.25','U1.0-Q-0.5',...
-              'U1.0-Q0.0'};
+RootDir = "F:\玉带湾扫频\250-2500Hz\";
+
+NamePattern = 'P*Q*.mat';
+% SVG
+% NameMatrix = {'U1.0-Q1.0' 'U1.0-Q0.5'  'U1.0-Q0.0'...
+%               'U1.0-Q-0.5' 'U1.0-Q-1.0'};
+
 % NameMatrix = {'U1.0-Q1.0'};
+OutRoot_Dir = fullfile(RootDir, '1-250Hz\');
 
-OutRoot_Dir = '250-2500Hz\';
+% 文件夹路径
+folder_path = RootDir; % 请将 YourFolderPath 替换为实际的文件夹路径
+% 获取文件列表
+file_list = dir(fullfile(folder_path, NamePattern));
+% 初始化存储变量
+data_cell = cell(1, numel(file_list));
+% 读取符合条件的文件
+% for i = 1:numel(file_list)
+%     file_name = file_list(i).name;
+%     file_path = fullfile(folder_path, file_name);
+%     % data = importdata(file_path); % 使用 load 函数读取 MAT 文件
+%     % 这里可以对读取的数据进行进一步处理，例如将其存储到一个 cell 数组中
+%     data_cell{i} = data;
+% end
 
-for i=1:length(NameMatrix)
+% 打印读取的文件个数
+fprintf('共读取了 %d 个文件\n', numel(file_list));
 
-    filename = [NameMatrix{i}];
-    Data = load([filename  '.mat']);
-    
-    OutRoot=[OutRoot_Dir,filename,'\'];
+OutRoot_Dir = fullfile(RootDir, '250-2500Hz\');
+
+for f_idx=1:length(file_list)
+
+    OutRoot= OutRoot_Dir;
     mkdir(OutRoot);
-    U_I_Z_F_10hz_250_2500(Step,Data,OutRoot);
+    fprintf("Processing %i/%i \r\n", f_idx, numel(file_list))
+    this_file_name = file_list(f_idx).name;
+    this_file_name_no_postfix = strsplit(this_file_name, '.');
+    this_file_name_no_postfix = strjoin(this_file_name_no_postfix(1:end-1), '.');
+    this_file_path = fullfile(file_list(f_idx).folder, file_list(f_idx).name);
+    Data = importdata(this_file_path);
+    
+    [ZPD, ZND] = U_I_Z_F_10hz_250_2500(Step,Data,OutRoot);
 
+    save(strcat(OutRoot, 'DATA_ZPD_', this_file_name_no_postfix, '.mat'), 'ZPD');
+    save(strcat(OutRoot, 'DATA_ZND_', this_file_name_no_postfix, '.mat'), 'ZND');
+
+    figure
+    subplot(2,1,1);
+    plot(ZPD(:,1),20*log(ZPD(:,2)));
+    xlabel('频率（Hz)');
+    ylabel('幅值（dB)');
+    subplot(2,1,2);
+    plot(ZPD(:,1),ZPD(:,3));
+    xlabel('频率（Hz)');
+    ylabel('相角（度)');
+    saveas(gca, strcat(OutRoot, '正序阻抗_', this_file_name_no_postfix, '.fig'))
+    saveas(gca, strcat(OutRoot, '正序阻抗_', this_file_name_no_postfix, '.png'))
 
 end
