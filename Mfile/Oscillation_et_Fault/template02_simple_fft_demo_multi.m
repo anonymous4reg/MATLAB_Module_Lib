@@ -1,5 +1,8 @@
 %% template02b_simple_fft_demo_multi.m  —  多测点 FFT 批量出图（关键词检索列）
-% version 1.0  revised by Yamin
+% version 1.1  revised by Yamin
+%
+% 【v1.1】新增 PEAK_SEARCH_RANGE：谱峰检索频段可手动设定（默认 [] = 全频段）。
+%        例：PEAK_SEARCH_RANGE = [0.1, 45] 只在 0.1~45 Hz 内找「第一 / 第二峰值」。
 %
 % 本脚本由 template02_simple_fft_demo.m 改写而来，主要改动：
 %   1. 支持在**一个 CSV** 中指定**多个测点**（原版只能给一组列号，一个测点）；
@@ -13,8 +16,9 @@
 %        测点 / 通道 / 列名 / 50Hz幅值 /
 %        第一峰值频率、第一峰值幅值、第一峰值幅值占比 /
 %        第二峰值频率、第二峰值幅值、第二峰值幅值占比 / …
-%      其中「第一峰值」= **除去 50Hz（及其邻域）之后**的最大谱峰，
-%      幅值占比 = 该峰幅值 / 50Hz幅值 × 100%。
+%      其中「第一峰值」= **在检索频段内、除去 50Hz（及其邻域）之后**的最大谱峰，
+%      幅值占比 = 该峰幅值 / 50Hz幅值 × 100%；
+%      检索频段由 PEAK_SEARCH_RANGE 控制（[] = 全频段）。
 %
 % ------------------------------------------------------------------------
 % 用法：
@@ -42,9 +46,10 @@ clear; close all; clc
 
 % ---- 指定要分析的 CSV 文件（只读这一个文件）----
 RootDir  = '../02-fault_rec_data/故障波形/';              % 数据目录
-CSV_FILE = '2026-10-05@09-45-16.180000.csv';
-CSV_FILE = '2026-10-06@09-49-31.670100.csv';
-CSV_FILE = '2026-10-06@15-54-39.560000.csv';              % 文件名（相对 RootDir）或绝对路径
+% CSV_FILE = '2026-10-05@09-45-16.180000.csv';
+% CSV_FILE = '2026-10-06@09-49-31.670100.csv';
+% CSV_FILE = '2026-10-06@15-54-39.560000.csv';
+CSV_FILE = 'SH12286_RCD_16935_20261006_094931_670_S__rate10000Hz.csv';% 文件名（相对 RootDir）或绝对路径
 
 % CSV 编码：'auto' = 自动探测；也可强制指定 'GBK' / 'UTF-8' / 'GB18030'
 CSV_ENCODING = 'auto';
@@ -109,11 +114,18 @@ OUTPUT_DIR_PREFIX = 'T02b_';
 SAVE_XLSX = true;                 % 是否把每个测点的幅值统计写入 Excel
 XLSX_NAME = 'FFT幅值统计.xlsx';    % Excel 文件名（保存在输出目录下）
 
-% 谱峰搜索参数
+% ---- 谱峰搜索参数 ----
 FUND_FREQ       = 50;   % 工频 (Hz)：单独统计其幅值，并从峰值搜索中排除
 N_PEAK          = 2;    % 除 50Hz 外记录的谱峰个数（1=只到第一峰值，2=到第二峰值…）
-PEAK_MIN_FREQ   = 1;    % 峰值搜索下限频率 (Hz)，用于排除直流/极低频
 PEAK_MIN_SEP_HZ = 2;    % 峰间最小间隔 (Hz)；也用于排除 50Hz 附近 ±该值内的谱线（避免旁瓣被当成峰值）
+
+% ★ 峰值检索频段：只在设定的频率范围内检索「第一峰值 / 第二峰值…」，默认为全频段。
+%     []            = 全频段（默认）：从 PEAK_MIN_FREQ 到奈奎斯特频率 fs/2
+%     [f_lo, f_hi]  = 只在该闭区间 [f_lo, f_hi] Hz 内检索峰值（此时忽略 PEAK_MIN_FREQ）
+%   例：只看次同步段写 [0.1, 45]；只看超同步段写 [55, 100]。
+%   注：无论范围如何设置，FUND_FREQ(50Hz) 及其 ±PEAK_MIN_SEP_HZ 邻域都会被排除。
+PEAK_SEARCH_RANGE = [0.1, 99];
+PEAK_MIN_FREQ     = 1;  % 峰值搜索下限 (Hz)：排除直流/极低频；仅当 PEAK_SEARCH_RANGE 为空时生效
 
 
 %% ==================== 定位 CSV 与读取列名 ====================
@@ -232,6 +244,22 @@ myt    = transpose((1:row) / double(FS));
 t_plot = myt(SELECTED_RANGE);
 
 
+%% ==================== 峰值检索频段（[f_lo, f_hi]） ====================
+if isempty(PEAK_SEARCH_RANGE)
+    peakLo   = PEAK_MIN_FREQ;
+    peakHi   = Inf;
+    bandDesc = sprintf('[%g, fs/2] Hz（全频段）', peakLo);
+else
+    assert(numel(PEAK_SEARCH_RANGE) == 2 && PEAK_SEARCH_RANGE(1) < PEAK_SEARCH_RANGE(2), ...
+        'PEAK_SEARCH_RANGE 需为 [f_lo, f_hi]（两元素且 f_lo < f_hi），或留空 [] 表示全频段。');
+    peakLo   = PEAK_SEARCH_RANGE(1);
+    peakHi   = PEAK_SEARCH_RANGE(2);
+    bandDesc = sprintf('[%g, %g] Hz', peakLo, peakHi);
+end
+fprintf('峰值检索频段：%s（已排除 %.1f Hz ±%.1f Hz 邻域）\n', ...
+    bandDesc, FUND_FREQ, PEAK_MIN_SEP_HZ);
+
+
 %% ==================== 逐测点 FFT + 出图 ====================
 % 幅值统计累加器（每个测点的每个通道一行）
 StatPoint  = {};   % 测点
@@ -271,10 +299,10 @@ for p = 1:nPoint
     for c = 1:nCol
         fundAmp = mag_ax(iFund, c);               % 50Hz（工频）幅值
 
-        % 前 N_PEAK 个谱峰：**排除 50Hz 及其 ±PEAK_MIN_SEP_HZ 邻域**
-        %   第 1 峰 = 除 50Hz 外剩余频段内的最大峰值
+        % 前 N_PEAK 个谱峰：在 [peakLo, peakHi] 频段内检索，**排除 50Hz 及其 ±PEAK_MIN_SEP_HZ 邻域**
+        %   第 1 峰 = 该频段内除 50Hz 邻域外的最大峰值
         [pkMag, pkFreq] = f_top_peaks(mag_ax(:, c), freq_ax, N_PEAK, ...
-                                      PEAK_MIN_FREQ, FUND_FREQ, PEAK_MIN_SEP_HZ, PEAK_MIN_SEP_HZ);
+                                      peakLo, peakHi, FUND_FREQ, PEAK_MIN_SEP_HZ, PEAK_MIN_SEP_HZ);
         pkPct = pkMag / fundAmp * 100;            % 幅值占比（相对 50Hz 幅值）
 
         StatPoint{end+1} = pointName{p};              %#ok<SAGROW>
@@ -470,29 +498,33 @@ function u = f_unit_from_name(name)
     end
 end
 
-function [pkMag, pkFreq] = f_top_peaks(mag, freq, nPeak, fMin, fExcl, exclTol, minSep)
-    % 取前 nPeak 个谱峰（按幅值降序），并**排除频率 fExcl 及其 ±exclTol 邻域**。
-    %   nPeak 个峰全部从「有效频段 freq >= fMin 且 |freq - fExcl| > exclTol」内挑选；
+function [pkMag, pkFreq] = f_top_peaks(mag, freq, nPeak, fMin, fMax, fExcl, exclTol, minSep)
+    % 取前 nPeak 个谱峰（按幅值降序），检索范围限定在 [fMin, fMax]，
+    % 并**排除频率 fExcl 及其 ±exclTol 邻域**。
+    %   nPeak 个峰全部从「有效频段 fMin <= freq <= fMax 且 |freq - fExcl| > exclTol」内挑选；
     %   第 1 峰 = 该有效频段内的全局最大值（即「除去 fExcl 后的最大峰值」），
     %   其余峰从「局部极大值」中按幅值降序挑选，且与已选峰值保持 minSep 的频率间隔
     %   （避免把同一谱峰的旁瓣/相邻 bin 当成新的峰）。
     % 峰数不足时用 NaN 补齐。
     %
     % 用法：
-    %   f_top_peaks(mag, freq, nPeak, fMin)                        % 不排除任何频率
-    %   f_top_peaks(mag, freq, nPeak, fMin, fExcl)                 % 排除 fExcl（容差 0）
-    %   f_top_peaks(mag, freq, nPeak, fMin, fExcl, exclTol, minSep)
-    if nargin < 7 || isempty(minSep),  minSep  = 0;   end
-    if nargin < 6 || isempty(exclTol), exclTol = 0;   end
-    if nargin < 5,                     fExcl   = NaN; end
+    %   f_top_peaks(mag, freq, nPeak, fMin)                              % 不设上限，不排除任何频率
+    %   f_top_peaks(mag, freq, nPeak, fMin, fMax)                        % 限定在 [fMin, fMax]
+    %   f_top_peaks(mag, freq, nPeak, fMin, fMax, fExcl)                 % 再排除 fExcl（容差 0）
+    %   f_top_peaks(mag, freq, nPeak, fMin, fMax, fExcl, exclTol, minSep)
+    %   注：fMax 留空 [] 或 Inf 表示不设上限（检索到奈奎斯特频率）。
+    if nargin < 8 || isempty(minSep),  minSep  = 0;   end
+    if nargin < 7 || isempty(exclTol), exclTol = 0;   end
+    if nargin < 6 || isempty(fExcl),   fExcl   = NaN; end
+    if nargin < 5 || isempty(fMax),    fMax    = Inf; end
 
     mag  = double(mag(:));
     freq = double(freq(:));
     pkMag  = nan(1, nPeak);
     pkFreq = nan(1, nPeak);
 
-    % 有效频段：>= fMin，且不在被排除频率的邻域内
-    valid = freq >= fMin;
+    % 有效频段：fMin <= freq <= fMax，且不在被排除频率的邻域内
+    valid = (freq >= fMin) & (freq <= fMax);
     if isfinite(fExcl) && exclTol > 0
         valid = valid & (abs(freq - fExcl) > exclTol);
     end

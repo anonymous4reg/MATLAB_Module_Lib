@@ -37,9 +37,11 @@ clear; close all; clc
 
 % ---- 指定要分析的 CSV 文件（只读这一个文件）----
 RootDir  = '../02-fault_rec_data/故障波形/';              % 数据目录
-CSV_FILE = '2026-10-05@09-45-16.180000.csv';
-CSV_FILE = '2026-10-06@09-49-31.670100.csv';
-CSV_FILE = '2026-10-06@15-54-39.560000.csv';              % 文件名（相对 RootDir）或绝对路径
+% CSV_FILE = '2026-10-05@09-45-16.180000.csv';
+% CSV_FILE = '2026-10-06@09-49-31.670100.csv';
+% CSV_FILE = '2026-10-06@15-54-39.560000.csv';
+% CSV_FILE = 'ctz_2026-10-05@09-46-16.262000.csv';
+CSV_FILE = 'SH12286_RCD_16935_20261006_094931_670_S__rate10000Hz.csv'; % 文件名（相对 RootDir）或绝对路径
 
 % CSV 编码：'auto' = 自动探测；也可强制指定 'GBK' / 'UTF-8' / 'GB18030'
 CSV_ENCODING = 'auto';
@@ -73,7 +75,7 @@ KEEP_ONLY_PHASE_COLS = true;
 % ---- 采样与 FFT 参数 ----
 FS = int64(10e3);        % 采样率 Hz（★必须与 CSV 一致，如 1000 / 5000 / 10e3）
 T_STEP_IDX = 0;          % 第几个 1 秒窗口，0 = 从文件开头
-FFT_WINDOW = 'none';     % f_fft_simple 的窗：none / hann / hamming / blackman
+FFT_WINDOW = 'hann';     % f_fft_simple 的窗：none / hann / hamming / blackman
 
 % ---- 绘图参数 ----
 XaxisLimit = [0, 300];       % 频谱横轴范围 (Hz)
@@ -247,7 +249,7 @@ for p = 1:nPoint
     figure('Name', sprintf('%s — %s', CSV_BASE, pointName{p}));
 
     % ---- 子图 1：正序幅值谱 ----
-    subplot(2, 1, 1)
+    subplot(2, 2, 1)
     plot(freq_ax, mag_ax(:, 1), 'LineWidth', LINEWIDTH)
     title('Positive Sequence')
     ylabel(labMag)
@@ -260,11 +262,37 @@ for p = 1:nPoint
     f_set_fontface(gca, 'TimesNewRomanSimsun')
     set(gca, 'fontsize', FONT_SIZE)
 
+    subplot(2, 2, 3)
+    plot(freq_ax, rad2deg(ang_ax(:, 1)), 'LineWidth', LINEWIDTH)
+    title('Positive Sequence')
+    ylabel('Phase (deg)')
+    xlabel('Frequency (Hz)')
+    grid on
+    set(gca, 'xlim', XaxisLimit)
+    if ~isempty(YaxisLimit)
+        set(gca, 'ylim', YaxisLimit)
+    end
+    f_set_fontface(gca, 'TimesNewRomanSimsun')
+    set(gca, 'fontsize', FONT_SIZE)
+
     % ---- 子图 2：负序幅值谱 ----
-    subplot(2, 1, 2)
+    subplot(2, 2, 2)
     plot(freq_ax, mag_ax(:, 2), 'LineWidth', LINEWIDTH)
     title('Negative Sequence')
     ylabel(labMag)
+    xlabel('Frequency (Hz)')
+    grid on
+    set(gca, 'xlim', XaxisLimit)
+    if ~isempty(YaxisLimit)
+        set(gca, 'ylim', YaxisLimit)
+    end
+    f_set_fontface(gca, 'TimesNewRomanSimsun')
+    set(gca, 'fontsize', FONT_SIZE)
+
+    subplot(2, 2, 4)
+    plot(freq_ax, rad2deg(ang_ax(:, 2)), 'LineWidth', LINEWIDTH)
+    title('Negative Sequence')
+    ylabel('Phase (deg)')
     xlabel('Frequency (Hz)')
     grid on
     set(gca, 'xlim', XaxisLimit)
