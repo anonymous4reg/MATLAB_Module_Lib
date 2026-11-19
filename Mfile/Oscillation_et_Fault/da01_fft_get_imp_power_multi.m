@@ -94,12 +94,12 @@ clear; close all; clc
 %% ==================== 用户定义区 ====================
 
 % ---- 指定要分析的 CSV 文件（只读这一个文件）----
-RootDir  = '../02-fault_rec_data/故障波形/';              % 数据目录
-% CSV_FILE = '2026-10-05@09-45-16.180000.csv';
+RootDir  = '../../../02-fault_rec_data/故障波形/';              % 数据目录
+CSV_FILE = '2026-10-05@09-45-16.180000.csv';
 % CSV_FILE = '2026-10-06@09-49-31.670100.csv';
 % CSV_FILE = '2026-10-06@15-54-39.560000.csv';   
 % CSV_FILE = 'ctz_2026-10-05@09-46-16.262000.csv';
-CSV_FILE = 'SH12286_RCD_16935_20261006_094931_670_S__rate10000Hz.csv'; % 文件名（相对 RootDir）或绝对路径
+% CSV_FILE = 'SH12286_RCD_16935_20261006_094931_670_S__rate10000Hz.csv'; % 文件名（相对 RootDir）或绝对路径
 
 % CSV 编码：'auto' = 自动探测；也可强制指定 'GBK' / 'UTF-8' / 'GB18030'
 CSV_ENCODING = 'auto';
@@ -133,7 +133,7 @@ FINE_FREQ_STEP  = 0.1;   % 精细谱频率步长 (Hz)
 BAND_HALF_WIDTH = 0.5;   % 频带功率积分半宽 W (Hz)；P、Q 都在 [f_c-W, f_c+W] 内积分
 
 % ---- 待分析的频率 (Hz) ----
-FREQ_LIST     = [36, 50, 64];   % 可写任意频率（精细谱步长 0.1 Hz，一般都能落到网格上）
+FREQ_LIST     = [34, 50, 66];   % 可写任意频率（精细谱步长 0.1 Hz，一般都能落到网格上）
 USE_AUTO_PEAK = false;          % true: 在 FREQ_LIST 附近自动找正序电流峰值作为频带中心
 FREQ_TOL      = 0.5;            % 自动寻峰搜索容差 (Hz)，仅 USE_AUTO_PEAK=true 时生效
 
